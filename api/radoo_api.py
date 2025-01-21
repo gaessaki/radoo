@@ -3,7 +3,6 @@ import logging
 import requests
 import json
 
-from odoo.addons.cs__util.models.exceptions.http_exception import HttpException
 from flask import Response
 
 _logger = logging.getLogger(__name__)

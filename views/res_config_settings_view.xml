@@ -13,9 +13,13 @@
                             <div class="col-12 col-lg-6 o_setting_box">
                                 <div class="o_setting_left_pane"/>
                                 <div class="o_setting_right_pane">
-                                    <span class="o_form_label">Merchant Keys</span>
+                                    <span class="o_form_label">Merchant Key</span>
                                     <div class="text-muted content-group mt16">
-                                        <field name="merchant_key" class="text-center oe_inline"/>
+                                        <field name="merchant_key" class="oe_inline" password="true"/>
+                                        <button name="action_validate_merchant_key"
+                                            string="Save"
+                                            type="object"
+                                            class="btn-primary mt16"/>
                                     </div>
                                 </div>
                             </div>
