@@ -8,5 +8,3 @@ class Radoo(models.Model):
     api_key = fields.Char(string='API Key')
     base_url = fields.Char(string='API Base URL')
     active = fields.Boolean(string='Active', default=True)
-
-    
