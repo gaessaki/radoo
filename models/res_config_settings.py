@@ -1,5 +1,6 @@
 from odoo import fields, models, api
 from odoo.exceptions import UserError
+from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
 
 
 class ResConfigSettings(models.TransientModel):
@@ -9,14 +10,13 @@ class ResConfigSettings(models.TransientModel):
 
    def action_validate_merchant_key(self):
       merchant_key = self.merchant_key
+      merchant_api = self._radish_merchant_api()
 
       if not merchant_key:
          raise UserError("Merchant Key is required.")
-      
-      from odoo.addons.radoo.api.radoo_api import validate_merchant_key
 
       try: 
-         if validate_merchant_key(merchant_key):
+         if merchant_api.validate_merchant_key(merchant_key):
             return {}
          else: 
             raise UserError("Merchant Key validation failed.")
@@ -24,4 +24,5 @@ class ResConfigSettings(models.TransientModel):
       except Exception as e:
             raise UserError(f"Error during validation: {str(e)}")
 
-
+   def _radish_merchant_api(self):
+      return RadishMerchantApi('merchants')

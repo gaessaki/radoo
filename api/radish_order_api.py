@@ -1,54 +1,7 @@
-import logging
+from .radish_api import RadishApi
 
-import requests
-import json
-
-from flask import Response
-
-_logger = logging.getLogger(__name__)
-
-class RadooApi:
-    # BASE_URL = 'https://tatsoi.azurewebsites.net/api/'
-    BASE_URL = 'http://localhost:7071/api/'
-    AF_KEY = 'lIqfF9Q02VsSSZkwIysfy7i5dzkjwXmem7k1oMdzi0nYAzFucRBKUg=='
-    TIMEOUT = 15
-
-    # def __init__(self, base_url=BASE_URL, AF_KEY=AF_KEY, debug_logging=None):
-    #     self.AF_KEY = AF_KEY
-    #     self.base_url = base_url
-
-    #     def debug_logging_wrapper(xml_string, func):
-    #         _logger.debug('%s: %s', func, xml_string)
-    #         if debug_logging:
-    #             debug_logging(xml_string, func)
-
-    #     self.debug_logging = debug_logging_wrapper
-
-    def validate_merchant_key(self, key):
-        url = f'{self.BASE_URL}merchants/keys/validation'
-        headers = {
-            'Content-Type': 'application/json',
-            'x-functions-key': self.AF_KEY
-        }
-        data = {
-            'merchantKey': key
-        }
-
-        try:
-            response = requests.post(
-                url, 
-                headers=headers, 
-                data=json.dumps(data), 
-                timeout=self.TIMEOUT
-                )
-            
-            if response.status_code != 200:
-                raise HttpException(response.status_code, response.text)
-            
-            return { 'success': True }
-        except requests.exceptions.RequestException as e:
-            raise HttpException(500, str(e))
-        
+class RadishOrderApi(RadishApi):
+    # TODO: all of these should be fixed to use the new stuff
     def fetch_orders(self, order_ids, merchant_key):
         if not isinstance(order_ids, list):
             order_ids = [order_ids]
