@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="delivery_carrier_form_radish" model="ir.ui.view">
+        <field name="name">delivery.carrier.form.provider.radish</field>
+        <field name="model">delivery.carrier</field>
+        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+        <field name="arch" type="xml">
+        <xpath expr="//page[@name='destination']" position='before'>
+            <page string="Radish Configuration" attrs="{'invisible': [('delivery_type', '!=', 'radish')]}">
+            <group>
+                <group>
+                <field name="radish_shipping_deadline_time" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
+                <field name="radish_expected_business_days" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
+                <field name="radish_merchant_key" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
+                </group>
+            </group>
+            </page>
+        </xpath>
+        </field>
+    </record>
+</odoo>

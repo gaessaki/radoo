@@ -1,7 +1,8 @@
 from .radish_api import RadishApi
 
 class RadishOrderApi(RadishApi):
-    # TODO: all of these should be fixed to use the new stuff
+    # def fetch_orders(self, order_ids):
+    
     def fetch_orders(self, order_ids, merchant_key):
         if not isinstance(order_ids, list):
             order_ids = [order_ids]
