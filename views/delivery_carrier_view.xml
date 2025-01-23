@@ -15,6 +15,18 @@
                 </group>
             </group>
             </page>
+            <page string="Pricing" attrs="{'invisible': [('delivery_type', '!=', 'radish')]}">
+                <group>
+                    <group>
+                    <field name="fixed_price"/>
+                    <div class="o_row o_td_label">
+                        <field name="radish_minimum_order"/>
+                        <label for="radish_minimum_order"/>
+                    </div>
+                    <field nolabel="1" name="radish_minimum_order_amount" attrs="{'required':[('radish_minimum_order','!=', False)], 'invisible':[('radish_minimum_order','=', False)]}"/>
+                    </group>
+                </group>
+            </page>
         </xpath>
         </field>
     </record>
