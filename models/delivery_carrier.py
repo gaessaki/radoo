@@ -70,3 +70,20 @@ class DeliveryCarrier(models.Model):
     
     def _radish_order_api(self):
         return RadishOrderApi('merchants/orders', self.radish_merchant_key)
+    
+    def radish_rate_shipment(self, order):
+        """Compute the price of the order shipment
+
+        :param order: recordset of sale.order
+        :return: dict: {'success': boolean,
+                       'price': a float,
+                       'error_message': a string containing an error message,
+                       'warning_message': a string containing a warning message}
+        """
+        self.ensure_one()
+        price = self.fixed_price
+        return {
+            'success':         True,
+            'price':           price,
+            'warning_message': None,
+        }
