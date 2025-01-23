@@ -3,6 +3,7 @@ import base64
 from odoo import models, fields, _
 from odoo.exceptions import ValidationError
 
+RADISH_LABEL_NAME = 'RadishLabel'
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
@@ -52,18 +53,32 @@ class StockPicking(models.Model):
         self.ensure_one()
         self._assert_must_and_can_create_radish_label_attachment()
         
-        pdf = self.env.ref('cs__radish.report_radish_picking_box_label')._render_qweb_pdf(self.id)
-        b64_pdf = base64.b64encode(pdf[0])
-        return self.env['ir.attachment'].create({
-            'name':        'RadishLabel_%s.pdf' % self.carrier_tracking_ref,
-            'store_fname': 'RadishLabel_%s' % self.carrier_tracking_ref,
-            'type':        'binary',
-            'datas':       b64_pdf,
-            'res_model':   'stock.picking',
-            'res_id':      self.id,
-            'mime_type':   'application/x-pdf',
-        })
+        radish_order_api = self.carrier_id._radish_order_api()
+        response = radish_order_api.get_label(self.carrier_tracking_ref)
+        if response.status_code == 200:
+            # Assuming the response contains the PDF in the body
+            pdf = response.content
+            b64_pdf = base64.b64encode(pdf)
+
+            # Create and attach the PDF label to the stock picking
+            return self.env['ir.attachment'].create({
+                'name':         f"{RADISH_LABEL_NAME}_{self.carrier_tracking_ref}.pdf",
+                'store_fname':  f"{RADISH_LABEL_NAME}_{self.carrier_tracking_ref}",
+                'type':         'binary',
+                'datas':        b64_pdf,
+                'res_model':    'stock.picking',
+                'res_id':       self.id,
+                'mimetype':     'application/x-pdf'
+            })
+        else:
+            raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
     
-    def action_radish_set_status_sent(self):
-        self.write({'radish_status': 'sent'})
-        return True
+    def radish_set_status_sent(self):
+        raise NotImplementedError("This method should be implemented by the Radish module.")
+    
+    def _check_carrier_details_compliance(self):
+        for picking in self:
+            if picking.delivery_type == 'radish':
+                picking._assert_must_and_can_create_radish_label_attachment()
+
+        super()._check_carrier_details_compliance() 

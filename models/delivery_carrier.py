@@ -1,4 +1,5 @@
 from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
+from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
 from odoo import models,fields, _
 from odoo.exceptions import UserError, ValidationError
 
@@ -43,4 +44,4 @@ class DeliveryCarrier(models.Model):
         return RadishMerchantApi('merchants', self.radish_merchant_key)
     
     def _radish_order_api(self):
-        return RadishMerchantApi('merchants/orders', self.radish_merchant_key)
+        return RadishOrderApi('merchants/orders', self.radish_merchant_key)
