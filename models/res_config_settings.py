@@ -14,13 +14,9 @@ class ResConfigSettings(models.TransientModel):
 
       if not merchant_key:
          raise UserError("Merchant Key is required.")
-
       try: 
          if merchant_api.validate_merchant_key(merchant_key):
             return {}
-         else: 
-            raise UserError("Merchant Key validation failed.")
-         
       except Exception as e:
             raise UserError(f"Error during validation: {str(e)}")
 

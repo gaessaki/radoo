@@ -1,3 +1,5 @@
+from odoo import models,fields, api, _
+from odoo.exceptions import UserError, ValidationError
 from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
 from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
 from odoo import models,fields, _
@@ -39,6 +41,29 @@ class DeliveryCarrier(models.Model):
         help='Minimum order amount to use this carrier.',
         default=0.0,
     )
+
+    @api.constrains('radish_merchant_key')
+    def action_validate_merchant_key(self):
+        merchant_key = self.radish_merchant_key
+        merchant_api = self._radish_merchant_api()
+
+        if not merchant_key:
+            raise ValidationError("Merchant Key is required.")
+        try: 
+            if merchant_api.validate_merchant_key(merchant_key):
+                title = _("Successfully!")
+                message = _("Merchant Key Validated Successfully!")
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': title,
+                        'message': message,
+                        'sticky': False,
+                    }
+                }
+        except Exception as e:
+                raise ValidationError(f"Error during validation: {str(e)}")
 
     def _radish_merchant_api(self):
         return RadishMerchantApi('merchants', self.radish_merchant_key)
