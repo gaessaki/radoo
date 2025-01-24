@@ -3,7 +3,7 @@ import json
 from .radish_api import RadishApi
 
 class RadishOrderApi(RadishApi):
-    def fetch_orders(self, order_ids):
+    def fetch_orders(self, order_ids): 
         if not isinstance(order_ids, list):
             order_ids = [order_ids]
 
@@ -56,7 +56,6 @@ class RadishOrderApi(RadishApi):
     def fetch_labels(self, order_ids):
         if not isinstance(order_ids, list):
             order_ids = [order_ids]
-
         query_string = ''
         for order_id in order_ids:
             if query_string != '':
