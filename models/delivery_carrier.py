@@ -66,10 +66,10 @@ class DeliveryCarrier(models.Model):
                 raise ValidationError(f"Error during validation: {str(e)}")
 
     def _radish_merchant_api(self):
-        return RadishMerchantApi('merchants', self.radish_merchant_key)
+        return RadishMerchantApi('merchants', merchant_key=self.radish_merchant_key)
     
     def _radish_order_api(self):
-        return RadishOrderApi('merchants/orders', self.radish_merchant_key)
+        return RadishOrderApi('merchants/orders', merchant_key=self.radish_merchant_key)
     
     def radish_rate_shipment(self, order):
         """Compute the price of the order shipment

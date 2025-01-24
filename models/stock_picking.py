@@ -1,6 +1,6 @@
 import base64
 
-from odoo import models, fields, _
+from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 RADISH_LABEL_NAME = 'RadishLabel'

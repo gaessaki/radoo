@@ -35,15 +35,10 @@ class RadishApi:
 
         url = self.base_url + path
 
-        if data:
-            json_data = json.dumps(data)
-        else:
-            json_data = None
-
         response = requests.request(
             method,
             url,
-            data=json_data,
+            json=json,
             headers=headers
         )
         if response is None:

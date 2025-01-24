@@ -1,4 +1,4 @@
-# import json
+import json
 
 from .radish_api import RadishApi
 
@@ -15,26 +15,31 @@ class RadishOrderApi(RadishApi):
 
         return self.get(query_string)
     
-    def create_order(self, order):
-        # order_json = json.dumps({
-        #     'order_ref': order.order_ref,
-        #     'recipient': {
-        #         'first': order.recipient_first,
-        #         'last': order.recipient_last,
-        #         'company': order.recipient_company,
-        #         'phone': order.recipient_phone,
-        #     },
-        #     'address': {
-        #         'line1': order.address_line1,
-        #         'line2': order.address_line2,
-        #         'city': order.address_city,
-        #         'province': order.address_state,
-        #         'postal': order.address_zip,
-        #         'country': order.address_country,
-        #         'notes': order.address_notes
-        #     }
-        # })
-        return self.post('', order.toJson())
+    def create_order(self, picking):
+        sale_order = picking.sale_id
+        if not sale_order:
+            raise ValueError("No sale order linked to the picking.")
+        partner = sale_order.partner_id
+        
+        order_json = json.dumps({
+            'order_ref': picking.name,
+            'recipient': {
+                'first': partner.name if partner.name else '',
+                'last': '',
+                'company': partner.company_name if partner.company_name else '',
+                'phone': partner.phone if partner.phone else '',
+            },
+            'address': {
+                'line1': partner.street if partner.street else '',
+                'line2': partner.street2 if partner.street2 else '',
+                'city': partner.city if partner.city else '',
+                'province': partner.state_id.name if partner.state_id else '',
+                'postal': partner.zip if partner.zip else '',
+                'country': partner.country_code if partner.country_code else '',
+                'notes': partner.comment if partner.comment else ''
+            }
+        })
+        return self.post('', order_json)
  
     def confirm_orders(self, order_ids):
         if not isinstance(order_ids, list):
