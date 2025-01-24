@@ -21,7 +21,7 @@ class RadishOrderApi(RadishApi):
             raise ValueError("No sale order linked to the picking.")
         partner = sale_order.partner_id
         
-        order_json = json.dumps({
+        order ={
             'order_ref': picking.name,
             'recipient': {
                 'first': partner.name if partner.name else '',
@@ -37,9 +37,10 @@ class RadishOrderApi(RadishApi):
                 'postal': partner.zip if partner.zip else '',
                 'country': partner.country_code if partner.country_code else '',
                 'notes': partner.comment if partner.comment else ''
-            }
-        })
-        return self.post('', order_json)
+            },
+            'platform': 'radoo'
+        }
+        return self.post('', order)
  
     def confirm_orders(self, order_ids):
         if not isinstance(order_ids, list):

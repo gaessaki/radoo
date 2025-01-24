@@ -38,7 +38,7 @@ class RadishApi:
         response = requests.request(
             method,
             url,
-            json=json,
+            json=data,
             headers=headers
         )
         if response is None:
