@@ -1,7 +1,7 @@
 import base64
-
-from odoo import models, fields, api
+from odoo import models, fields, _
 from odoo.exceptions import ValidationError, UserError
+from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
 
 RADISH_LABEL_NAME = 'RadishLabel'
 
@@ -25,19 +25,35 @@ class StockPicking(models.Model):
 
 
     def get_attachment(self):
-        """
-        Function from module multi_print_picking_label
-        :param picking:
-        :return:
-        """
         self.ensure_one()
-        if self.delivery_type == 'radish':
-            label = self.ensure_radish_label_attachment()
-            self.assert_attachment_label(label)
-            return label
+        if self.delivery_type != 'radish':
+            return None
+        
+        response = self.carrier_id._radish_order_api().fetch_labels(self.name)
+        if response.status_code == 200:
+            # Assuming the response contains the PDF in the body
+            pdf = response.content
+            b64_pdf = base64.b64encode(pdf)
 
-        return super(StockPicking, self).get_attachment()
+            attachment = self.env['ir.attachment'].create({
+                'name':         f"{RADISH_LABEL_NAME}.pdf",
+                'store_fname':  f"{RADISH_LABEL_NAME}",
+                'type':         'binary',
+                'datas':        b64_pdf,
+                'res_model':    'stock.picking',
+                'res_id':       self.id,
+                'mimetype':     'application/x-pdf'
+            })
+            return {
+                'type': 'ir.actions.act_url',
+                'url': f'/web/content/{attachment.id}?download=true',
+                'target': 'new',
+            }
+        else:
+            raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
+
     
+    # Functions below are not used
     def ensure_radish_label_attachment(self):
         self.ensure_one()
         if self.delivery_type != 'radish':

@@ -1,5 +1,4 @@
 import json
-
 from .radish_api import RadishApi
 
 class RadishOrderApi(RadishApi):
@@ -62,13 +61,14 @@ class RadishOrderApi(RadishApi):
                 query_string += '&'
             query_string += f'order_refs={order_id}'
 
-        response = self.get('labels?' + query_string)
+        response = self.get('/labels?' + query_string)
     
         if not response:
-                raise Exception(404, 'Could not find labels!')
+            raise Exception(404, 'Could not find labels!')
+        
         content_type = response.headers['content-type']
         if content_type != 'application/pdf':
             raise Exception(500, 'Invalid content type')
-        
-        return response.headers
-    
+
+        return response
+

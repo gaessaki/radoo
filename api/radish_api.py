@@ -46,10 +46,10 @@ class RadishApi:
         
         if response.status_code < 200 or response.status_code > 299:
             raise Exception(response.status_code, response.text)
+        
         self.debug_logging("Response is %s" % response.text, "%s %s" % (method, path))
-        if response.text:
-            return response.json()
-        return None
+        return response
+
     
     def get(self, path):
         return self.request('get', path, None)

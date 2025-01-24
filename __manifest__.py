@@ -9,6 +9,7 @@
     'data': [
         # 'views/res_config_settings_view.xml',
         'views/delivery_carrier_view.xml',
+        'views/stock_picking_views.xml',
     ],
     'installable': True, 
     'application': True,
