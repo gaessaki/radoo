@@ -1,5 +1,5 @@
 import base64
-from odoo import models, fields, _
+from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
 
@@ -8,21 +8,19 @@ RADISH_LABEL_NAME = 'RadishLabel'
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    radish_status = fields.Selection([
-        ('pending', 'Pending Pickup'),
-        ('picked_up', 'Picked Up'),
-        ('delivered', 'Delivered'),
+    radish_order_status = fields.Selection([
+        ('placed', 'Pending Pickup'),
+        ('ready', 'Ready'),
+        ('done', 'Delivered'),
         ('cancelled', 'Cancelled')
-    ], string='Radish Status', default='pending')
+    ], string='Radish Status')
 
     def action_confirm_radish_pickup(self):
         self.ensure_one()
         if self.delivery_type != 'radish':
             raise UserError("This picking is not associated with a Radish delivery.")
         
-        self.carrier_id._radish_order_api().confirm_pickup(self)
-        
-
+        self.radish_order_status = self.carrier_id._radish_order_api().confirm_orders(self.name)[0]['status']
 
     def get_attachment(self):
         self.ensure_one()

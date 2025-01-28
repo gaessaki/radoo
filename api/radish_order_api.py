@@ -50,7 +50,7 @@ class RadishOrderApi(RadishApi):
             'status': 'ready' 
             }, order_ids))
         
-        return self.request('patch', '', orders)
+        return self.request('patch', '', {'orders': orders})
     
     def fetch_labels(self, order_ids):
         if not isinstance(order_ids, list):

@@ -87,3 +87,27 @@ class DeliveryCarrier(models.Model):
             'price':           price,
             'warning_message': None,
         }
+    
+    def radish_send_shipping(self, pickings):
+        """Send the shipping information to the carrier.
+
+        :param pickings: recordset of stock.picking
+        :return: dict: {'success': boolean,
+                       'tracking_number': a string containing the tracking number,
+                       'price': a float,
+                       'currency': a string containing the currency,
+                       'error_message': a string containing an error message,
+                       'warning_message': a string containing a warning message}
+        """
+        self.ensure_one()
+        picking = pickings[0]
+        if picking.carrier_tracking_ref:
+            return {
+                'success': True,
+                'tracking_number': picking.carrier_tracking_ref,
+                'price': picking.carrier_price,
+                'currency': picking.sale_id.currency_id.name,
+                'warning_message': None,
+            }
+        else:
+            raise UserError(_("The picking %s has no tracking reference.") % picking.name)

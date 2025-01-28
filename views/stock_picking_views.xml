@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="get_attachment"
+                        attrs="{'invisible': [('delivery_type', '!=', 'radish')]}"
                         type="object"
                         string="Generate Radish Label"
                         class="oe_highlight"/>
@@ -14,4 +15,3 @@
         </field>
     </record>
 </odoo>
-
