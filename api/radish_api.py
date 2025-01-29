@@ -50,7 +50,6 @@ class RadishApi:
         self.debug_logging("Response is %s" % response.text, "%s %s" % (method, path))
         return response
 
-    
     def get(self, path):
         return self.request('get', path, None)
     

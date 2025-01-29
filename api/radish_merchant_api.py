@@ -8,7 +8,4 @@ class RadishMerchantApi(RadishApi):
             'merchantKey': key
         }
         response = self.post(path, data)
-        
-        if response == None:
-            self.merchant_key = key
-            return { 'success' : True }
+        return { 'success' : True }
