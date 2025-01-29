@@ -1,3 +1,5 @@
+import base64
+import json
 from odoo import models,fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
@@ -89,25 +91,50 @@ class DeliveryCarrier(models.Model):
         }
     
     def radish_send_shipping(self, pickings):
-        """Send the shipping information to the carrier.
+        """ Send the package to the service provider
 
-        :param pickings: recordset of stock.picking
-        :return: dict: {'success': boolean,
-                       'tracking_number': a string containing the tracking number,
-                       'price': a float,
-                       'currency': a string containing the currency,
-                       'error_message': a string containing an error message,
-                       'warning_message': a string containing a warning message}
+        :param pickings: A recordset of pickings
+        :return list: A list of dictionaries (one per picking) containing of the form:
+                         { 'exact_price': price,
+                           'tracking_number': number }
         """
         self.ensure_one()
-        picking = pickings[0]
-        if picking.carrier_tracking_ref:
-            return {
-                'success': True,
-                'tracking_number': picking.carrier_tracking_ref,
-                'price': picking.carrier_price,
-                'currency': picking.sale_id.currency_id.name,
-                'warning_message': None,
-            }
-        else:
-            raise UserError(_("The picking %s has no tracking reference.") % picking.name)
+        if not pickings:
+            raise ValidationError(_('No Radish pickings selected, you might have selected orders from other carriers'))
+        
+        results = []
+        for picking in pickings:
+            response = self._radish_order_api().confirm_orders(picking.name)
+            if response.status_code != 200:
+                raise ValidationError(_('Failed to send the order to the delivery carrier API.'))
+            response_data = response.json()
+            results.append({
+                'exact_price': self.fixed_price,
+                'tracking_number': response_data[0].get('trackingRef')
+            })
+        return results
+
+    def radish_get_tracking_link(self, picking):
+        """ Get the tracking link
+
+        :param picking: recordset of stock.picking
+        :return: string: tracking link
+        """
+        self.ensure_one()
+        return f"https://radish.coop/tracking/{picking.carrier_tracking_ref}"
+    
+    def radish_cancel_shipment(self, picking):
+        """ Cancel the shipment
+
+        :param picking: recordset of stock.picking
+        :return: bool: True if the shipment was successfully canceled
+        """
+        self.ensure_one()
+        raise ValidationError(_('Please contact Radish support to cancel the shipment.'))
+    
+    def _radish_get_default_custom_package_code(self):
+        """ Some delivery carriers require a prefix to be sent in order to use custom
+        packages (ie not official ones). This optional method will return it as a string.
+        """
+        self.ensure_one()
+        return False
