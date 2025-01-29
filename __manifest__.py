@@ -7,7 +7,6 @@
     'website': 'https://radish.coop',
     'depends': ['website_sale', 'sale', 'stock', 'delivery', 'base'],
     'data': [
-        # 'views/res_config_settings_view.xml',
         'views/delivery_carrier_view.xml',
         'views/stock_picking_views.xml',
     ],

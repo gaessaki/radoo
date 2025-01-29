@@ -53,7 +53,7 @@ class DeliveryCarrier(models.Model):
             raise ValidationError("Merchant Key is required.")
         try: 
             if merchant_api.validate_merchant_key(merchant_key):
-                title = _("Successfully!")
+                title = _("Success!")
                 message = _("Merchant Key Validated Successfully!")
                 return {
                     'type': 'ir.actions.client',
