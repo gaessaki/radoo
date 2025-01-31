@@ -15,13 +15,6 @@ class StockPicking(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Radish Status')
 
-    def action_confirm_radish_pickup(self):
-        self.ensure_one()
-        if self.delivery_type != 'radish':
-            raise UserError("This picking is not associated with a Radish delivery.")
-        
-        self.radish_order_status = self.carrier_id._radish_order_api().confirm_orders(self.name)[0]['status']
-
     def get_attachment(self):
         self.ensure_one()
         if self.delivery_type != 'radish':

@@ -41,16 +41,14 @@ class RadishOrderApi(RadishApi):
         }
         return self.post('', order)
  
-    def confirm_orders(self, order_ids):
-        if not isinstance(order_ids, list):
-            order_ids = [order_ids]
-
-        orders = list(map(lambda order_id: { 
+    def confirm_order(self, order_id, packages):
+        order = [{
             'ref': order_id , 
-            'status': 'ready' 
-            }, order_ids))
+            'status': 'ready' ,
+            'parcels': packages
+        }]
         
-        return self.request('patch', '', {'orders': orders})
+        return self.request('patch', '', {'orders': order})
     
     def fetch_labels(self, order_ids):
         if not isinstance(order_ids, list):

@@ -100,11 +100,35 @@ class DeliveryCarrier(models.Model):
         """
         self.ensure_one()
         if not pickings:
-            raise ValidationError(_('No Radish pickings selected, you might have selected orders from other carriers'))
+            raise UserError(_('No Radish pickings selected, you might have selected orders from other carriers'))
         
+        api = self._radish_order_api()
         results = []
         for picking in pickings:
-            response = self._radish_order_api().confirm_orders(picking.name)
+            packages = []
+            if len(picking.partner_id):
+                if not len(picking.package_ids):
+                    raise UserError(_('No packages found for picking %s') % picking.name)
+                for package in picking.package_ids:
+                    if not len(package.package_type_id):
+                        raise ValidationError(_('No package type found for package %s') % package.name)
+                    package_type = package.package_type_id
+                    packages.append({
+                        'ref': package.name,
+                        'dimensions': {
+                            'length': package_type.packaging_length,
+                            'width': package_type.width,
+                            'height': package_type.height,
+                            'unit': package_type.length_uom_name,
+                        },
+                        'weight': {
+                            'value': package.weight,
+                            'unit': package_type.weight_uom_name,
+                        }
+                    })
+
+            response = api.confirm_order(picking.name, packages)
+
             if response.status_code != 200:
                 raise ValidationError(_('Failed to send the order to the delivery carrier API.'))
             response_data = response.json()
