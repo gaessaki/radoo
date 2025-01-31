@@ -21,67 +21,18 @@ class StockPicking(models.Model):
             raise UserError("This picking is not associated with a Radish delivery.")
         
         self.radish_order_status = self.carrier_id._radish_order_api().confirm_orders(self.name)[0]['status']
+        
 
     def get_attachment(self):
         self.ensure_one()
-        if self.delivery_type != 'radish':
-            return None
-        
-        response = self.carrier_id._radish_order_api().fetch_labels(self.name)
-        if response.status_code == 200:
-            # Assuming the response contains the PDF in the body
-            pdf = response.content
-            b64_pdf = base64.b64encode(pdf)
-
-            attachment = self.env['ir.attachment'].create({
-                'name':         f"{RADISH_LABEL_NAME}.pdf",
-                'store_fname':  f"{RADISH_LABEL_NAME}",
-                'type':         'binary',
-                'datas':        b64_pdf,
-                'res_model':    'stock.picking',
-                'res_id':       self.id,
-                'mimetype':     'application/x-pdf'
-            })
+        if self.delivery_type == 'radish':
+            attachment = self.ensure_radish_label_attachment()
             return {
                 'type': 'ir.actions.act_url',
                 'url': f'/web/content/{attachment.id}?download=true',
                 'target': 'new',
             }
-        else:
-            raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
-        
-    def bulk_print_attachments(self):
-        pickings = self.env['stock.picking'].browse(self.env.context.get('active_ids', [])).filtered(lambda p: p.delivery_type == 'radish')
 
-        if not pickings:
-            raise ValidationError(_('No Radish pickings selected, you might have selected orders from other carriers'))
-        
-        response = pickings[0].carrier_id._radish_order_api().fetch_labels(pickings.mapped('name'))
-
-        if response.status_code == 200:
-            pdf = response.content
-            b64_pdf = base64.b64encode(pdf)
-        
-            attachment = self.env['ir.attachment'].create({
-                'name':         f"{RADISH_LABEL_NAME}.pdf",
-                'store_fname':  f"{RADISH_LABEL_NAME}",
-                'type':         'binary',
-                'datas':        b64_pdf,
-                'res_model':    'stock.picking',
-                'res_id':       pickings[0].id,
-                'mimetype':     'application/x-pdf'
-            })
-            return {
-                'type': 'ir.actions.act_url',
-                'url': f'/web/content/{attachment.id}?download=true',
-                'target': 'new',
-            }
-        else:
-            raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
-        
-
-    
-    # Functions below are not used
     def ensure_radish_label_attachment(self):
         self.ensure_one()
         if self.delivery_type != 'radish':
@@ -113,17 +64,15 @@ class StockPicking(models.Model):
         self.ensure_one()
         self._assert_must_and_can_create_radish_label_attachment()
         
-        radish_order_api = self.carrier_id._radish_order_api()
-        response = radish_order_api.get_label(self.carrier_tracking_ref)
+        response = self.carrier_id._radish_order_api().fetch_labels(self.name)
         if response.status_code == 200:
             # Assuming the response contains the PDF in the body
             pdf = response.content
             b64_pdf = base64.b64encode(pdf)
 
-            # Create and attach the PDF label to the stock picking
             return self.env['ir.attachment'].create({
-                'name':         f"{RADISH_LABEL_NAME}_{self.carrier_tracking_ref}.pdf",
-                'store_fname':  f"{RADISH_LABEL_NAME}_{self.carrier_tracking_ref}",
+                'name':         f"{RADISH_LABEL_NAME}.pdf",
+                'store_fname':  f"{RADISH_LABEL_NAME}",
                 'type':         'binary',
                 'datas':        b64_pdf,
                 'res_model':    'stock.picking',
@@ -142,3 +91,61 @@ class StockPicking(models.Model):
                 picking._assert_must_and_can_create_radish_label_attachment()
 
         super()._check_carrier_details_compliance() 
+
+
+    # def get_attachment(self):
+    #     self.ensure_one()
+    #     if self.delivery_type != 'radish':
+    #         return None
+        
+    #     response = self.carrier_id._radish_order_api().fetch_labels(self.name)
+    #     if response.status_code == 200:
+    #         # Assuming the response contains the PDF in the body
+    #         pdf = response.content
+    #         b64_pdf = base64.b64encode(pdf)
+
+    #         attachment = self.env['ir.attachment'].create({
+    #             'name':         f"{RADISH_LABEL_NAME}.pdf",
+    #             'store_fname':  f"{RADISH_LABEL_NAME}",
+    #             'type':         'binary',
+    #             'datas':        b64_pdf,
+    #             'res_model':    'stock.picking',
+    #             'res_id':       self.id,
+    #             'mimetype':     'application/x-pdf'
+    #         })
+    #         return {
+    #             'type': 'ir.actions.act_url',
+    #             'url': f'/web/content/{attachment.id}?download=true',
+    #             'target': 'new',
+    #         }
+    #     else:
+    #         raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
+        
+    def bulk_print_attachments(self):
+        pickings = self.env['stock.picking'].browse(self.env.context.get('active_ids', [])).filtered(lambda p: p.delivery_type == 'radish')
+
+        if not pickings:
+            raise ValidationError(_('No Radish pickings selected, you might have selected orders from other carriers'))
+        
+        response = pickings[0].carrier_id._radish_order_api().fetch_labels(pickings.mapped('name'))
+
+        if response.status_code == 200:
+            pdf = response.content
+            b64_pdf = base64.b64encode(pdf)
+        
+            attachment = self.env['ir.attachment'].create({
+                'name':         f"{RADISH_LABEL_NAME}.pdf",
+                'store_fname':  f"{RADISH_LABEL_NAME}",
+                'type':         'binary',
+                'datas':        b64_pdf,
+                'res_model':    'stock.picking',
+                'res_id':       pickings[0].id,
+                'mimetype':     'application/x-pdf'
+            })
+            return {
+                'type': 'ir.actions.act_url',
+                'url': f'/web/content/{attachment.id}?download=true',
+                'target': 'new',
+            }
+        else:
+            raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
