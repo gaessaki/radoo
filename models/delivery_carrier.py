@@ -1,11 +1,14 @@
 import base64
 import json
+import logging
 from odoo import models,fields, api, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
 from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
 from odoo import models,fields, _
 from odoo.exceptions import UserError, ValidationError
+
+_logger = logging.getLogger(__name__)
 
 class DeliveryCarrier(models.Model):
     _inherit = 'delivery.carrier'
@@ -136,6 +139,12 @@ class DeliveryCarrier(models.Model):
                 'exact_price': self.fixed_price,
                 'tracking_number': response_data[0].get('trackingRef')
             })
+            try:
+                # Pre generate the label
+                picking.with_delay().ensure_radish_label_attachment()
+            except Exception as e:
+                _logger.exception(e)              
+
         return results
 
     def radish_get_tracking_link(self, picking):
