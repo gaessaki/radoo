@@ -20,9 +20,9 @@
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
                 <button name="get_attachment"
-                        attrs="{'invisible': [('delivery_type', '!=', 'radish')]}"
+                        attrs="{'invisible': ['|', ('delivery_type', '!=', 'radish'), ('state', '!=', 'done')]}"
                         type="object"
-                        string="Generate Radish Label"
+                        string="Get Radish Label"
                         class="oe_highlight"/>
             </xpath>
         </field>
