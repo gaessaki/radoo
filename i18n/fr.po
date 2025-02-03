@@ -7,37 +7,39 @@ msgstr ""
 "Project-Id-Version: Odoo Server 16.0-20250123\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-01-29 19:42+0000\n"
-"PO-Revision-Date: 2025-01-29 19:42+0000\n"
+"PO-Revision-Date: 2025-02-03 15:15-0500\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.5\n"
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/stock_package_type.py:0
 #, python-format
 msgid "%s doesn't have a carrier code."
-msgstr "%s n'a pas de code de transporteur."
+msgstr "%s n’a pas de code transporteur."
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/stock_picking.py:0
 #, python-format
 msgid "A tracking reference is required to print %s's label."
-msgstr "Une référence de suivi est requise pour imprimer l'étiquette de %s."
+msgstr "Une référence de suivi est requise pour imprimer l’étiquette de %s."
 
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.view_picking_tree_inherit
 msgid "Bulk Print Radish Labels"
-msgstr "Impression en masse des étiquettes Radish"
+msgstr "Impression groupée des étiquettes Radish"
 
 #. module: radoo
 #: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__cancelled
 msgid "Cancelled"
-msgstr "Annulé"
+msgstr "Annulée"
 
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_stock_package_type__package_carrier_type
@@ -45,85 +47,63 @@ msgid "Carrier"
 msgstr "Transporteur"
 
 #. module: radoo
-#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_minimum_order
-msgid "Check if the carrier has a minimum order amount."
-msgstr "Vérifiez si le transporteur a un montant de commande minimum."
-
-#. module: radoo
 #: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__done
 msgid "Delivered"
-msgstr "Livré"
+msgstr "Livrée"
 
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_expected_business_days
-msgid "Expected delivery date business days"
-msgstr "Nombre de jours ouvrables prévus pour la livraison"
+msgid "Anticipated Number of Delivery Days"
+msgstr "Jours de livraison estimés"
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/stock_picking.py:0
-#: code:addons/radoo/models/stock_picking.py:0
-#: code:addons/radoo/models/stock_picking.py:0
 #, python-format
-msgid "Failed to retrieve the label from the delivery carrier API."
-msgstr "La récupération de l'étiquette à partir de l'API du transporteur a échoué."
+msgid "Failed to retrieve the label from the delivery carrier."
+msgstr "Échec de la récupération de l’étiquette auprès du transporteur."
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
-msgid "Failed to send the order to the delivery carrier API."
-msgstr "L'envoi de la commande à l'API du transporteur a échoué."
+msgid "Failed to send the order to the delivery carrier."
+msgstr "Échec de l’envoi de la commande au transporteur."
 
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.view_picking_form_inherit
-msgid "Generate Radish Label"
-msgstr "Générer une étiquette Radish"
+msgid "Get Radish Label"
+msgstr "Obtenir l’étiquette Radish"
 
 #. module: radoo
 #: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_shipping_deadline_time
 msgid ""
-"If the picking is validated after this time, we will add another extra day "
-"to the expected scheduled date."
+"The cutoff time after which the delivery will be pushed to the "
+"next business day."
 msgstr ""
-"Si la préparation est validée après cette heure, nous ajouterons "
-"un jour supplémentaire à la date prévue."
+"L’heure de coupure après laquelle l’expédition du colis sera décalée au "
+"prochain jour ouvrable."
 
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_merchant_key
 msgid "Merchant Key"
-msgstr "Clé marchande"
+msgstr "Clé marchand"
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
 msgid "Merchant Key Validated Successfully!"
-msgstr "Clé marchande validée avec succès!"
+msgstr "La clé marchand a été validée avec succès !"
 
 #. module: radoo
 #: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_merchant_key
 msgid ""
-"Merchant Key for Radish API. You can request a merchant key from your Radish"
-" relationship manager."
+"Merchant Key for Radish API. You can request a merchant key from your "
+"Radish relationship manager."
 msgstr ""
-"Clé marchande pour l'API Radish. Vous pouvez demander une clé marchande à "
-"votre gestionnaire de relation Radish."
-
-#. module: radoo
-#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_minimum_order_amount
-msgid "Minimum Order Amount"
-msgstr "Montant minimum de commande"
-
-#. module: radoo
-#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_minimum_order
-msgid "Minimum Order Amount Required"
-msgstr "Montant minimum de commande requis"
-
-#. module: radoo
-#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_minimum_order_amount
-msgid "Minimum order amount to use this carrier."
-msgstr "Montant minimum de commande pour utiliser ce transporteur."
+"La clé marchand pour l’API Radish. Vous pouvez demander une clé marchand à "
+"votre gestionnaire de compte Radish."
 
 #. module: radoo
 #. odoo-python
@@ -131,37 +111,47 @@ msgstr "Montant minimum de commande pour utiliser ce transporteur."
 #: code:addons/radoo/models/stock_picking.py:0
 #, python-format
 msgid ""
-"No Radish pickings selected, you might have selected orders from other "
-"carriers"
+"No Radish stock pickings selected, you might have selected orders from other "
+"carriers."
 msgstr ""
-"Aucune préparation Radish sélectionnée, vous avez peut-être sélectionné des "
-"commandes d'autres transporteurs"
-
-#. module: radoo
-#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_expected_business_days
-msgid ""
-"Number of business days to add to the validation date to compute the "
-"expected delivery date."
-msgstr ""
-"Nombre de jours ouvrables à ajouter à la date de validation pour "
-"calculer la date de livraison prévue."
-
-#. module: radoo
-#: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__placed
-msgid "Pending Pickup"
-msgstr "En attente de ramassage"
+"Aucun colis Radish sélectionné. Vous avez peut-être sélectionné des "
+"commandes d’autres transporteurs."
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
-msgid "Please contact Radish support to cancel the shipment."
-msgstr "Veuillez contacter le support Radish pour annuler l'expédition."
+msgid "No package type found for package %s."
+msgstr "Aucun type d’emballage trouvé pour le colis %s."
 
 #. module: radoo
-#: model_terms:ir.ui.view,arch_db:radoo.delivery_carrier_form_radish
-msgid "Pricing"
-msgstr "Tarification"
+#. odoo-python
+#: code:addons/radoo/models/delivery_carrier.py:0
+#, python-format
+msgid "No packages found for picking %s."
+msgstr "Aucun colis disponible pour le ramassage %s."
+
+#. module: radoo
+#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_expected_business_days
+msgid ""
+"The anticipated number of business days after a pickup is confirmed with which "
+"to compute the delivery date."
+msgstr ""
+"Le nombre estimé de jours ouvrables après la confirmation du ramassage "
+"servant au calcul de la date de livraison."
+
+#. module: radoo
+#: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__placed
+msgid "Pending Pickup"
+msgstr "Ramassage en attente"
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/models/delivery_carrier.py:0
+#, python-format
+msgid "Please contact Radish customer support to cancel the shipment."
+msgstr ""
+"Veuillez contacter le service client Radish pour annuler l’expédition."
 
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_delivery_carrier__delivery_type
@@ -177,49 +167,49 @@ msgstr "Radish"
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.delivery_carrier_form_radish
 msgid "Radish Configuration"
-msgstr "Configuration Radish"
+msgstr "Paramètres Radish"
 
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_stock_picking__radish_order_status
 msgid "Radish Status"
-msgstr "État Radish"
+msgstr "Statut Radish"
 
 #. module: radoo
 #: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__ready
 msgid "Ready"
-msgstr "Prêt"
+msgstr "Prête"
 
 #. module: radoo
 #: model:ir.model,name:radoo.model_sale_order
 msgid "Sales Order"
-msgstr "Commande client"
+msgstr "Commande"
 
 #. module: radoo
 #: model:ir.model,name:radoo.model_delivery_carrier
 msgid "Shipping Methods"
-msgstr "Méthodes d'expédition"
+msgstr "Modes d’expédition"
 
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_shipping_deadline_time
-msgid "Shipping deadline time"
-msgstr "Heure de tombée pour les livraisons"
+msgid "Shipping Cutoff"
+msgstr "Date limite d’expédition"
 
 #. module: radoo
 #: model:ir.model,name:radoo.model_stock_package_type
 msgid "Stock package type"
-msgstr "Type de colis"
+msgstr "Type d’emballage standard"
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
 msgid "Success!"
-msgstr "Succès!"
+msgstr "Succès !"
 
 #. module: radoo
 #: model:ir.model,name:radoo.model_stock_picking
 msgid "Transfer"
-msgstr "Transfert"
+msgstr "Transférer"
 
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.delivery_carrier_form_radish
