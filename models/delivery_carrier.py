@@ -20,19 +20,19 @@ class DeliveryCarrier(models.Model):
     
     radish_merchant_key = fields.Char(
         string='Merchant Key',
-        help='Merchant Key for Radish API. You can request a merchant key from your Radish relationship manager.',
+        help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
     )
 
     radish_expected_business_days = fields.Integer(
-        string='Expected delivery date business days',
-        help='Number of business days to add to the validation date to compute the expected delivery date.',
+        string='Anticipated Number of Delivery Days',
+        help='The anticipated number of business days after a pickup is confirmed with which to compute the delivery date.',
         default=1,
     )
 
     radish_shipping_deadline_time = fields.Datetime(
-        string='Shipping deadline time', 
-        help="If the picking is validated after this time, we will add another extra day to the expected scheduled date.", 
-        default="2025-01-10 19:00:00"
+        string='Shipping Cutoff', 
+        help="The cutoff time after which the delivery will be pushed to the next business day.", 
+        default="2025-01-10 15:00:00"
     )
 
     @api.constrains('radish_merchant_key')
@@ -92,7 +92,7 @@ class DeliveryCarrier(models.Model):
         """
         self.ensure_one()
         if not pickings:
-            raise UserError(_('No Radish pickings selected, you might have selected orders from other carriers'))
+            raise UserError(_('No Radish stock pickings are selected. You might have selected orders from other carriers.'))
         
         api = self._radish_order_api()
         results = []
@@ -100,10 +100,10 @@ class DeliveryCarrier(models.Model):
             packages = []
             if len(picking.partner_id):
                 if not len(picking.package_ids):
-                    raise UserError(_('No packages found for picking %s') % picking.name)
+                    raise UserError(_('No packages found for picking %s.') % picking.name)
                 for package in picking.package_ids:
                     if not len(package.package_type_id):
-                        raise ValidationError(_('No package type found for package %s') % package.name)
+                        raise ValidationError(_('No package type found for package %s.') % package.name)
                     package_type = package.package_type_id
                     packages.append({
                         'ref': package.name,
@@ -122,7 +122,7 @@ class DeliveryCarrier(models.Model):
             response = api.confirm_order(picking.name, packages)
 
             if response.status_code != 200:
-                raise ValidationError(_('Failed to send the order to the delivery carrier API.'))
+                raise ValidationError(_('Failed to send the order to the delivery carrier.'))
             response_data = response.json()
             results.append({
                 'exact_price': self.fixed_price,
@@ -152,7 +152,7 @@ class DeliveryCarrier(models.Model):
         :return: bool: True if the shipment was successfully canceled
         """
         self.ensure_one()
-        raise ValidationError(_('Please contact Radish support to cancel the shipment.'))
+        raise ValidationError(_('Please contact Radish customer support to cancel the shipment.'))
     
     def _radish_get_default_custom_package_code(self):
         """ Some delivery carriers require a prefix to be sent in order to use custom
