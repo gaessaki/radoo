@@ -35,18 +35,6 @@ class DeliveryCarrier(models.Model):
         default="2025-01-10 19:00:00"
     )
 
-    radish_minimum_order = fields.Boolean(
-        string='Minimum Order Amount Required',
-        help='Check if the carrier has a minimum order amount.',
-        default=False,
-    )
-
-    radish_minimum_order_amount = fields.Float(
-        string='Minimum Order Amount',
-        help='Minimum order amount to use this carrier.',
-        default=0.0,
-    )
-
     @api.constrains('radish_merchant_key')
     def action_validate_merchant_key(self):
         merchant_key = self.radish_merchant_key
@@ -86,6 +74,7 @@ class DeliveryCarrier(models.Model):
                        'warning_message': a string containing a warning message}
         """
         self.ensure_one()
+        
         price = self.fixed_price
         return {
             'success':         True,
