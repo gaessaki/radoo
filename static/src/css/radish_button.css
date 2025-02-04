@@ -1,0 +1,62 @@
+.radish-icon {
+    height: 16px; 
+    width: 16px; 
+    margin: 0 0 3px;
+}
+
+button.wr-btn-black {
+    min-height: 33px;
+    min-width: 95px;
+    display: inline-block;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border: 1.5px solid #000;
+    border-radius: 0.375rem;
+    background-color: #000;
+    color: white;
+    font-family: 'mr-eaves-xl-modern', Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    text-transform: none !important;  
+}
+
+button.wr-btn-black:hover {
+    border-color: hsl(0, 0%, 25%);
+    background-color: hsl(0, 0%, 25%);
+    color: white;
+}
+
+button.wr-btn-black:active {
+    border-color: hsl(0, 0%, 40%);
+    background-color: hsl(0, 0%, 40%);
+}
+
+
+/* radish primary button */
+button.rd-btn-primary {
+    border: 1.5px solid #000;
+    border-radius: 0.375rem;
+    background-color: #000;
+    color: #FFF;
+    font-family: 'mr-eaves-xl-modern', Arial, Helvetica, sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.8;
+    padding: 0.5rem 1.5rem;
+    text-transform: none !important;  
+}
+
+button.rd-btn-primary:hover {
+    border-color: hsl(0, 0%, 25%);
+    background-color: hsl(0, 0%, 25%);
+    color: #FFF;
+}
+
+button.rd-btn-primary:active {
+    border-color: hsl(0, 0%, 40%);
+    background-color: hsl(0, 0%, 40%);
+}
+
+

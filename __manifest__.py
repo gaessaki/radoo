@@ -10,6 +10,11 @@
         'views/delivery_carrier_view.xml',
         'views/stock_picking_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'radoo/static/src/css/radish_button.css',
+        ],
+    },
     'installable': True, 
     'application': True,
     'license': 'GPL-3',

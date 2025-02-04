@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <record id="view_picking_tree_inherit" model="ir.ui.view">
+    <!-- <record id="view_picking_tree_inherit" model="ir.ui.view">
         <field name="name">stock.picking.tree.inherit</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.vpicktree" />
@@ -12,7 +12,8 @@
                         class="btn-primary"/>
             </xpath>
         </field>
-    </record>
+    </record> -->
+    
     <record id="view_picking_form_inherit" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit</field>
         <field name="model">stock.picking</field>
@@ -22,9 +23,12 @@
                 <button name="get_attachment"
                         attrs="{'invisible': ['|', ('delivery_type', '!=', 'radish'), ('state', '!=', 'done')]}"
                         type="object"
-                        string="Get Radish Label"
-                        class="oe_highlight"/>
+                        class="wr-btn-black">
+                        <img src="/radoo/static/description/icon.png" class="radish-icon"/> 
+                        Get Label
+                </button>
             </xpath>
         </field>
     </record>
 </odoo>
+
