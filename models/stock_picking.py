@@ -15,6 +15,14 @@ class StockPicking(models.Model):
         ('cancelled', 'Cancelled')
     ], string='Radish Status')
 
+    def action_confirm(self):
+        res = super(StockPicking, self).action_confirm()
+
+        if self.delivery_type == 'radish':
+            self.carrier_id._radish_order_api().initialize_order(self)
+
+        return res
+
     def get_attachment(self):
         self.ensure_one()
         if self.delivery_type == 'radish':

@@ -119,14 +119,14 @@ class DeliveryCarrier(models.Model):
                         }
                     })
 
-            response = api.confirm_order(picking.name, packages)
+            response = api.confirm_order(picking, packages)
 
             if response.status_code != 200:
                 raise ValidationError(_('Failed to send the order to the delivery carrier.'))
             response_data = response.json()
             results.append({
                 'exact_price': self.fixed_price,
-                'tracking_number': response_data[0].get('trackingRef')
+                'tracking_number': response_data.get('trackingRef')
             })
             try:
                 # Pre generate the label

@@ -1,4 +1,8 @@
 import json
+
+from odoo.addons.radoo.api.models.radish_address import RadishAddress
+from odoo.addons.radoo.api.models.radish_order import RadishOrder
+from odoo.addons.radoo.api.models.radish_recipient import RadishRecipient
 from .radish_api import RadishApi
 
 class RadishOrderApi(RadishApi):
@@ -14,41 +18,25 @@ class RadishOrderApi(RadishApi):
 
         return self.get(query_string)
     
-    def create_order(self, picking):
-        sale_order = picking.sale_id
-        if not sale_order:
-            raise ValueError("No sale order linked to the picking.")
-        partner = sale_order.partner_id
+    def initialize_order(self, picking):
+        partner = picking.partner_id
         
-        order ={
-            'order_ref': picking.name,
-            'recipient': {
-                'first': partner.name if partner.name else '',
-                'last': '',
-                'company': partner.company_name if partner.company_name else '',
-                'phone': partner.phone if partner.phone else '',
-            },
-            'address': {
-                'line1': partner.street if partner.street else '',
-                'line2': partner.street2 if partner.street2 else '',
-                'city': partner.city if partner.city else '',
-                'province': partner.state_id.name if partner.state_id else '',
-                'postal': partner.zip if partner.zip else '',
-                'country': partner.country_code if partner.country_code else '',
-                'notes': partner.comment if partner.comment else ''
-            },
-            'platform': 'radoo'
-        }
-        return self.post('', order)
+        recipient = RadishRecipient(picking_partner=partner)
+        address = RadishAddress(picking_partner=partner)
+        order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
+    
+        body = { 'order': order.toJSON(), 'platform': 'radoo' }
+        return self.post('', body)
  
-    def confirm_order(self, order_id, packages):
-        order = [{
-            'ref': order_id , 
-            'status': 'ready' ,
-            'parcels': packages
-        }]
-        
-        return self.request('patch', '', {'orders': order})
+    def confirm_order(self, picking, packages):
+        partner = picking.partner_id
+
+        recipient = RadishRecipient(picking_partner=partner)
+        address = RadishAddress(picking_partner=partner)
+        order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
+
+        body = { 'order': order.toJSON(), 'parcels': packages, 'platform': 'radoo', 'confirm': True }
+        return self.post('', body)
     
     def fetch_labels(self, order_ids):
         if not isinstance(order_ids, list):

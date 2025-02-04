@@ -1,7 +1,6 @@
 import logging
 
 import requests
-import json
 
 _logger = logging.getLogger(__name__)
 
@@ -23,7 +22,7 @@ class RadishApi:
 
         self.debug_logging = debug_logging_wrapper
 
-    def request(self, method, path, data):
+    def request(self, method, path, json):
         headers = {
             "Content-Type":     "application/json",
             "x-functions-key":  self.af_key,
@@ -38,7 +37,7 @@ class RadishApi:
         response = requests.request(
             method,
             url,
-            json=data,
+            json=json,
             headers=headers
         )
         if response is None:
