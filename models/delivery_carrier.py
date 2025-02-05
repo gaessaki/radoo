@@ -152,7 +152,7 @@ class DeliveryCarrier(models.Model):
         :return: bool: True if the shipment was successfully canceled
         """
         self.ensure_one()
-        response = api.cancel_order(picking)
+        response = self._radish_order_api().cancel_order(picking)
         if response.status_code != 200:
             raise ValidationError(_('Failed to cancel the order with the delivery carrier.'))
         return True

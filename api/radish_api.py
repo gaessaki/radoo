@@ -1,6 +1,7 @@
 import logging
 
 import requests
+from odoo.exceptions import ValidationError, UserError
 
 _logger = logging.getLogger(__name__)
 
@@ -41,10 +42,10 @@ class RadishApi:
             headers=headers
         )
         if response is None:
-            raise Exception("No response")
+            raise ValidationError("No response")
         
         if response.status_code < 200 or response.status_code > 299:
-            raise Exception(response.status_code, response.text)
+            raise ValidationError(f"An error occurred: {response.status_code} - {response.text}")
         
         self.debug_logging("Response is %s" % response.text, "%s %s" % (method, path))
         return response
