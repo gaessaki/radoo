@@ -15,11 +15,13 @@ class RadishRecipient(RadishObject):
         self.last = ''
         self.company = getattr(picking_partner, 'company_name', '') or ''
         self.phone = getattr(picking_partner, 'phone', '') or ''
+        self.email = getattr(picking_partner, 'email', '') or ''
 
     def toJSON(self):
         return {
             'first': self.first,
             'last': self.last,
             'company': self.company,
-            'phone': self.phone
+            'phone': self.phone,
+            'email': self.email,
         }
