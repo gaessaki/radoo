@@ -152,7 +152,10 @@ class DeliveryCarrier(models.Model):
         :return: bool: True if the shipment was successfully canceled
         """
         self.ensure_one()
-        raise ValidationError(_('Please contact Radish customer support to cancel the shipment.'))
+        response = api.cancel_order(picking)
+        if response.status_code != 200:
+            raise ValidationError(_('Failed to cancel the order with the delivery carrier.'))
+        return True
     
     def _radish_get_default_custom_package_code(self):
         """ Some delivery carriers require a prefix to be sent in order to use custom
