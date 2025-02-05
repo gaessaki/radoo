@@ -39,14 +39,12 @@ class RadishOrderApi(RadishApi):
         return self.post('', body)
     
     def cancel_order(self, picking):
-        partner = picking.partner_id
-
-        recipient = RadishRecipient(picking_partner=partner)
-        address = RadishAddress(picking_partner=partner)
-        order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
-
-        body = { 'order': order.toJSON(), 'platform': 'radoo', 'status': 'cancelled' }
-        return self.post('', body)
+        order = [{
+            'ref': picking.name, 
+            'status': 'cancelled',
+        }]
+        
+        return self.request('patch', '', {'orders': order})
     
     def fetch_labels(self, order_ids):
         if not isinstance(order_ids, list):
