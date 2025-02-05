@@ -1,13 +1,17 @@
 .radish-icon {
     height: 16px; 
     width: 16px; 
-    margin: 0 0 3px;
+    margin: 0 2px 1px 0;
+}
+
+span.get_label {
+    padding-top: 1px;
 }
 
 button.wr-btn-black {
     min-height: 33px;
     min-width: 95px;
-    display: inline-block;
+    display: flex;
     align-items: center;
     justify-content: center;
     position: relative;

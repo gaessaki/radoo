@@ -25,7 +25,10 @@
                         type="object"
                         class="wr-btn-black">
                         <img src="/radoo/static/description/icon.png" class="radish-icon"/> 
-                        Get Label
+                        <span class="get_label">
+                            Get Label
+                        </span>
+
                 </button>
             </xpath>
         </field>
