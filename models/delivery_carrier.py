@@ -105,6 +105,13 @@ class DeliveryCarrier(models.Model):
                     if not len(package.package_type_id):
                         raise ValidationError(_('No package type found for package %s.') % package.name)
                     package_type = package.package_type_id
+                    products = []
+                    for quant in package.quant_ids:
+                        product = quant.product_id
+                        products.append({
+                            'name': product.name,
+                            'quantity': quant.quantity,
+                        })
                     packages.append({
                         'ref': package.name,
                         'dimensions': {
@@ -116,7 +123,8 @@ class DeliveryCarrier(models.Model):
                         'weight': {
                             'value': package.weight,
                             'unit': package_type.weight_uom_name,
-                        }
+                        },
+                        'products': products
                     })
 
             response = api.confirm_order(picking, packages)
