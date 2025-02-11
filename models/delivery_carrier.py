@@ -94,6 +94,7 @@ class DeliveryCarrier(models.Model):
         if not pickings:
             raise UserError(_('No Radish stock pickings are selected. You might have selected orders from other carriers.'))
         
+        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url")
         api = self._radish_order_api()
         results = []
         for picking in pickings:
@@ -111,6 +112,7 @@ class DeliveryCarrier(models.Model):
                         products.append({
                             'name': product.name,
                             'quantity': quant.quantity,
+                            'image': f'{base_url}/web/image?model=product.product&id={product.id}&field=image_512',
                         })
                     packages.append({
                         'ref': package.name,
