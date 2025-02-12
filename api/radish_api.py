@@ -7,8 +7,7 @@ _logger = logging.getLogger(__name__)
 
 AF_KEY = 'lIqfF9Q02VsSSZkwIysfy7i5dzkjwXmem7k1oMdzi0nYAzFucRBKUg=='
 TIMEOUT = '15'
-API_URL = 'http://host.docker.internal:7071/api/'
-# API_URL = 'https://tatsoi.azurewebsites.net/api/'
+API_URL = 'https://tatsoi.azurewebsites.net/api/'
 
 class RadishApi:
     def __init__(self, endpoint, af_key=AF_KEY, merchant_key=None, debug_logging=None):
