@@ -23,18 +23,6 @@ class DeliveryCarrier(models.Model):
         help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
     )
 
-    radish_expected_business_days = fields.Integer(
-        string='Anticipated Number of Delivery Days',
-        help='The anticipated number of business days after a pickup is confirmed with which to compute the delivery date.',
-        default=1,
-    )
-
-    radish_shipping_deadline_time = fields.Datetime(
-        string='Shipping Cutoff', 
-        help="The cutoff time after which the delivery will be pushed to the next business day.", 
-        default="2025-01-10 15:00:00"
-    )
-
     @api.constrains('radish_merchant_key')
     def action_validate_merchant_key(self):
         merchant_key = self.radish_merchant_key

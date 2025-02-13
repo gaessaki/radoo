@@ -8,13 +8,6 @@ RADISH_LABEL_NAME = 'RadishLabel'
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    radish_order_status = fields.Selection([
-        ('placed', 'Pending Pickup'),
-        ('ready', 'Ready'),
-        ('done', 'Delivered'),
-        ('cancelled', 'Cancelled')
-    ], string='Radish Status')
-
     def action_confirm(self):
         res = super(StockPicking, self).action_confirm()
 
@@ -84,10 +77,3 @@ class StockPicking(models.Model):
     
     def radish_set_status_sent(self):
         raise NotImplementedError("This method should be implemented by the Radish module.")
-    
-    def _check_carrier_details_compliance(self):
-        for picking in self:
-            if picking.delivery_type == 'radish':
-                picking._assert_must_and_can_create_radish_label_attachment()
-
-        super()._check_carrier_details_compliance()

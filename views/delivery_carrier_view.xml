@@ -8,9 +8,7 @@
         <xpath expr="//page[@name='destination']" position='before'>
             <page string="Radish Configuration" attrs="{'invisible': [('delivery_type', '!=', 'radish')]}">
             <group>
-                <field name="radish_shipping_deadline_time" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
-                <field name="radish_expected_business_days" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
-                <field name="radish_merchant_key" />
+                <field name="radish_merchant_key" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
 
                 <button name="action_validate_merchant_key"
                     string="Validate"

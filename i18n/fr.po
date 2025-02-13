@@ -41,24 +41,9 @@ msgid "A tracking reference is required to print %s's label."
 msgstr "Une référence de suivi est requise pour imprimer l’étiquette de %s."
 
 #. module: radoo
-#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_expected_business_days
-msgid "Anticipated Number of Delivery Days"
-msgstr "Nombre de jours ouvrables prévus pour la livraison"
-
-#. module: radoo
-#: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__cancelled
-msgid "Cancelled"
-msgstr "Annulé"
-
-#. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_stock_package_type__package_carrier_type
 msgid "Carrier"
 msgstr "Transporteur"
-
-#. module: radoo
-#: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__done
-msgid "Delivered"
-msgstr "Livré"
 
 #. module: radoo
 #. odoo-python
@@ -119,11 +104,6 @@ msgid "No packages found for picking %s."
 msgstr "Aucun colis disponible pour le ramassage %s."
 
 #. module: radoo
-#: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__placed
-msgid "Pending Pickup"
-msgstr "En attente de ramassage"
-
-#. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_delivery_carrier__delivery_type
 msgid "Provider"
 msgstr "Fournisseur"
@@ -138,21 +118,6 @@ msgstr "Radish"
 #: model_terms:ir.ui.view,arch_db:radoo.delivery_carrier_form_radish
 msgid "Radish Configuration"
 msgstr "Configuration Radish"
-
-#. module: radoo
-#: model:ir.model.fields,field_description:radoo.field_stock_picking__radish_order_status
-msgid "Radish Status"
-msgstr "État Radish"
-
-#. module: radoo
-#: model:ir.model.fields.selection,name:radoo.selection__stock_picking__radish_order_status__ready
-msgid "Ready"
-msgstr "Prêt"
-
-#. module: radoo
-#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_shipping_deadline_time
-msgid "Shipping Cutoff"
-msgstr "Heure de tombée pour les livraisons"
 
 #. module: radoo
 #: model:ir.model,name:radoo.model_delivery_carrier
@@ -170,24 +135,6 @@ msgstr "Type de colis de stock"
 #, python-format
 msgid "Success!"
 msgstr "Succès !"
-
-#. module: radoo
-#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_expected_business_days
-msgid ""
-"The anticipated number of business days after a pickup is confirmed with "
-"which to compute the delivery date."
-msgstr ""
-"Nombre de jours ouvrables à ajouter à la date de validation pour calculer la"
-" date de livraison prévue."
-
-#. module: radoo
-#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_shipping_deadline_time
-msgid ""
-"The cutoff time after which the delivery will be pushed to the next business"
-" day."
-msgstr ""
-"Si la préparation est validée après cette heure, nous ajouterons un jour "
-"supplémentaire à la date prévue."
 
 #. module: radoo
 #: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_merchant_key
