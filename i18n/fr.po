@@ -25,11 +25,11 @@ msgstr "%s n’a pas de code transporteur."
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.view_picking_form_inherit
 msgid ""
-"<span class=\"get_label\">\n"
+"<span class=\"radish_get_label\">\n"
 "                            Get Label\n"
 "                        </span>"
 msgstr ""
-"<span class=\"get_label\">\n"
+"<span class=\"radish_get_label\">\n"
 "                            Obtenir l’étiquette\n"
 "                        </span>"
 

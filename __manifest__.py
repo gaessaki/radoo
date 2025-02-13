@@ -1,11 +1,11 @@
 {
     'name': 'Radoo',
-    'version': '1.0.0',
+    'version': '15.0.0.0',
     'author': 'Radish Cooperative',
     'summary': 'Fast, affordable local delivery with Radish!',
     'category': 'eCommerce',
     'website': 'https://radish.coop',
-    'depends': ['website_sale', 'sale', 'stock', 'delivery', 'base'],
+    'depends': ['stock', 'delivery'],
     'data': [
         'views/delivery_carrier_view.xml',
         'views/stock_picking_views.xml',

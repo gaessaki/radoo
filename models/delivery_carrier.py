@@ -166,10 +166,3 @@ class DeliveryCarrier(models.Model):
         if response.status_code != 200:
             raise ValidationError(_('Failed to cancel the order with the delivery carrier.'))
         return True
-    
-    def _radish_get_default_custom_package_code(self):
-        """ Some delivery carriers require a prefix to be sent in order to use custom
-        packages (ie not official ones). This optional method will return it as a string.
-        """
-        self.ensure_one()
-        return False

@@ -1,31 +1,17 @@
 <?xml version='1.0' encoding='utf-8'?>
-<odoo>
-    <!-- <record id="view_picking_tree_inherit" model="ir.ui.view">
-        <field name="name">stock.picking.tree.inherit</field>
-        <field name="model">stock.picking</field>
-        <field name="inherit_id" ref="stock.vpicktree" />
-        <field name="arch" type="xml">
-            <xpath expr="//header" position="inside">
-                <button name="bulk_print_attachments"
-                        type="object"
-                        string="Bulk Print Radish Labels"
-                        class="btn-primary"/>
-            </xpath>
-        </field>
-    </record> -->
-    
+<odoo>    
     <record id="view_picking_form_inherit" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form" />
         <field name="arch" type="xml">
             <xpath expr="//header" position="inside">
-                <button name="get_attachment"
+                <button name="get_radish_attachment"
                         attrs="{'invisible': ['|', ('delivery_type', '!=', 'radish'), ('state', '!=', 'done')]}"
                         type="object"
                         class="wr-btn-black">
                         <img src="/radoo/static/description/icon.png" class="radish-icon"/> 
-                        <span class="get_label">
+                        <span class="radish_get_label">
                             Get Label
                         </span>
 
@@ -34,4 +20,3 @@
         </field>
     </record>
 </odoo>
-
