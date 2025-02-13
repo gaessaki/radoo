@@ -16,12 +16,14 @@ class DeliveryCarrier(models.Model):
     delivery_type = fields.Selection(
         selection_add=[('radish', 'Radish')],
         ondelete={'radish': lambda recs: recs.write({'delivery_type': 'fixed', 'fixed_price': 0})}
-        )
+    )
     
     radish_merchant_key = fields.Char(
         string='Merchant Key',
         help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
     )
+
+    radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
 
     @api.constrains('radish_merchant_key')
     def action_validate_merchant_key(self):
@@ -63,7 +65,7 @@ class DeliveryCarrier(models.Model):
         """
         self.ensure_one()
         
-        price = self.fixed_price
+        price = self.radish_fixed_price
         return {
             'success':         True,
             'price':           price,
