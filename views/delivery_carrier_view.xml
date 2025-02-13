@@ -9,12 +9,6 @@
             <page string="Radish Configuration" attrs="{'invisible': [('delivery_type', '!=', 'radish')]}">
             <group>
                 <field name="radish_merchant_key" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
-
-                <button name="action_validate_merchant_key"
-                    string="Validate"
-                    type="object"
-                    class="btn-primary mt16"
-                    />
             </group>
             </page>
         </xpath>
