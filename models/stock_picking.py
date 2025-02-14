@@ -45,17 +45,9 @@ class StockPicking(models.Model):
             order='create_date desc',
             limit=1,
         )
-    
-    def _assert_must_and_can_create_radish_label_attachment(self):
-        self.ensure_one()
-        if not self.carrier_tracking_ref:
-            if self.picking_type_id.code == 'outgoing':
-                raise ValidationError(_("A tracking reference is required to print %s's label.") % self.name)
-            return None
         
     def _create_radish_label_attachment(self):
         self.ensure_one()
-        self._assert_must_and_can_create_radish_label_attachment()
         
         response = self.carrier_id._radish_order_api().fetch_labels(self.name)
         if response.status_code == 200:
@@ -74,6 +66,3 @@ class StockPicking(models.Model):
             })
         else:
             raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
-    
-    def radish_set_status_sent(self):
-        raise NotImplementedError("This method should be implemented by the Radish module.")

@@ -130,7 +130,7 @@ class DeliveryCarrier(models.Model):
             })
             try:
                 # Pre generate the label
-                picking.with_delay().ensure_radish_label_attachment()
+                picking.ensure_radish_label_attachment()
             except Exception as e:
                 _logger.exception(e)              
 
