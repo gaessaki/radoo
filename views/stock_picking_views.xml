@@ -1,5 +1,22 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>    
+    <!-- <record id="view_picking_tree_inherit" model="ir.ui.view">
+        <field name="name">stock.picking.tree.inherit</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree" />
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+            <header>
+                <button name="bulk_print_attachments"
+                            attrs="{'invisible': [('carrier_show_radish_bulk_print', '=', False)]}"
+                            type="object"
+                            string="Bulk Print Radish Labels"
+                            class="btn-primary"/>
+            </header>
+                
+            </xpath>
+        </field>
+    </record> -->
     <record id="view_picking_form_inherit" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit</field>
         <field name="model">stock.picking</field>

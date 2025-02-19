@@ -10,6 +10,7 @@
             <group>
                 <field name="radish_merchant_key" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
                 <field name="radish_fixed_price" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
+                <!-- <field name="show_radish_bulk_print"/> -->
             </group>
             </page>
         </xpath>

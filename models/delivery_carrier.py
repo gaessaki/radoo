@@ -25,6 +25,8 @@ class DeliveryCarrier(models.Model):
 
     radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
 
+    # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)
+
     @api.constrains('radish_merchant_key')
     def action_validate_merchant_key(self):
         merchant_key = self.radish_merchant_key
