@@ -8,8 +8,8 @@
         <xpath expr="//page[@name='destination']" position='before'>
             <page string="Radish Configuration" attrs="{'invisible': [('delivery_type', '!=', 'radish')]}">
             <group>
-                <field name="radish_prod_merchant_key" password="True"/>
-                <field name="radish_test_merchant_key" password="True"/>
+                <field name="radish_prod_merchant_key" autocomplete="off"/>
+                <field name="radish_test_merchant_key" autocomplete="off"/>
                 <field name="radish_fixed_price" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
                 <!-- <field name="show_radish_bulk_print"/> -->
             </group>
