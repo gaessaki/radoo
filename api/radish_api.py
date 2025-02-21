@@ -1,3 +1,4 @@
+import json
 import logging
 
 import requests
@@ -8,6 +9,15 @@ _logger = logging.getLogger(__name__)
 AF_KEY = 'lIqfF9Q02VsSSZkwIysfy7i5dzkjwXmem7k1oMdzi0nYAzFucRBKUg=='
 TIMEOUT = '15'
 API_URL = 'https://tatsoi.azurewebsites.net/api/'
+
+API_ERROR_MESSAGES = {
+    'InvalidMerchantKey': 'No merchant key was provided. Make sure you have a key for the current environment.',
+    'MerchantKeyNotFound': 'The provided merchant key is invalid. Please check the key and try again.',
+    'MerchantStatusNotActive': 'The provided merchant key is not active. Please contact Radish support.',
+    'MissingOrders': 'No orders were provided in the request.',
+    'OrderNotFound': 'No order found for the provided order reference.',
+    'AttemptingToModifyCompletedOrder': 'The order has already been completed and cannot be modified.',
+}
 
 class RadishApi:
     def __init__(self, endpoint, af_key=AF_KEY, merchant_key=None, debug_logging=None):
@@ -22,7 +32,7 @@ class RadishApi:
 
         self.debug_logging = debug_logging_wrapper
 
-    def request(self, method, path, json):
+    def request(self, method, path, json_data):
         headers = {
             "Content-Type":     "application/json",
             "x-functions-key":  self.af_key,
@@ -33,20 +43,30 @@ class RadishApi:
             headers['merchant-key'] = self.merchant_key
 
         url = self.base_url + path
-
-        response = requests.request(
-            method,
-            url,
-            json=json,
-            headers=headers
-        )
-        if response is None:
-            raise ValidationError("No response")
-        
-        if response.status_code < 200 or response.status_code > 299:
-            raise ValidationError(f"An error occurred: {response.status_code} - {response.text}")
+        logged_headers = {k: v for k, v in headers.items() if k != 'x-functions-key'}
+        self.debug_logging("Request: %s %s \nHeaders: %s \nPayload: %s" % (method, url, json.dumps(logged_headers, indent=2), json.dumps(json_data, indent=2)), 
+                           "%s %s" % (method, path))
+    
+        try:
+            response = requests.request(
+                method,
+                url,
+                json=json_data,
+                headers=headers
+            )
+        except requests.exceptions.RequestException as e:
+            self.debug_logging("Request failed", "%s %s" % (method, path))
+            raise ValidationError("Failed to connect to the Radish API Server.")            
         
         self.debug_logging("Response is %s" % response.text, "%s %s" % (method, path))
+        
+        status_code = response.status_code
+        if status_code == 500:
+            raise ValidationError("Internal server error. Please contact Radish support if this problem persists.")
+        if status_code != 200:
+            error_message = API_ERROR_MESSAGES.get(response.json().get('error'), response.json().get('error'))
+            raise ValidationError("Request failed with status code %s : \n%s" % status_code, error_message)
+
         return response
 
     def get(self, path):

@@ -3,19 +3,16 @@ from .radish_object import RadishObject
 class RadishRecipient(RadishObject):
     def __init__(
             self,
-            picking_partner = None
+            picking_partner
     ):
         """
-        :param first: First name of the recipient
-        :param last: Last name of the recipient
-        :param company: Company name of the recipient, if any
-        :param phone: Phone number of the recipient
+        :param picking_partner: Partner record of the picking
         """
-        self.first = getattr(picking_partner, 'name', '') or ''
+        self.first = picking_partner.name
         self.last = ''
-        self.company = getattr(picking_partner, 'company_name', '') or ''
-        self.phone = getattr(picking_partner, 'phone', '') or ''
-        self.email = getattr(picking_partner, 'email', '') or ''
+        self.company = picking_partner.company_name
+        self.phone = picking_partner.phone
+        self.email = picking_partner.email
 
     def toJSON(self):
         return {

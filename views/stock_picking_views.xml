@@ -24,7 +24,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='carrier_tracking_ref']" position="after">
                 <button name="get_radish_attachment"
-                        attrs="{'invisible': ['|', ('delivery_type', '!=', 'radish'), ('state', '!=', 'done')]}"
+                        attrs="{'invisible': ['|', ('delivery_type', '!=', 'radish'), ('carrier_tracking_ref', '=', False)]}"
                         type="object"
                         class="wr-btn-black">
                     <img src="/radoo/static/description/icon.png" class="radish-icon"/> 

@@ -18,8 +18,13 @@ class DeliveryCarrier(models.Model):
         ondelete={'radish': lambda recs: recs.write({'delivery_type': 'fixed', 'fixed_price': 0})}
     )
     
-    radish_merchant_key = fields.Char(
-        string='Merchant Key',
+    radish_prod_merchant_key = fields.Char(
+        string='Production Merchant Key',
+        help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
+    )
+
+    radish_test_merchant_key = fields.Char(
+        string='Test Merchant Key',
         help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
     )
 
@@ -27,13 +32,20 @@ class DeliveryCarrier(models.Model):
 
     # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)
 
-    @api.constrains('radish_merchant_key')
-    def action_validate_merchant_key(self):
-        merchant_key = self.radish_merchant_key
-        merchant_api = self._radish_merchant_api()
+    @api.constrains('radish_prod_merchant_key')
+    def action_validate_prod_merchant_key(self):
+        for record in self:
+            self._validate_merchant_key(record.radish_prod_merchant_key)
 
+    @api.constrains('radish_test_merchant_key')
+    def action_validate_test_merchant_key(self):
+        for record in self:
+            self._validate_merchant_key(record.radish_test_merchant_key)
+    
+    def _validate_merchant_key(self, merchant_key):
+        merchant_api = self._radish_merchant_api()
         if not merchant_key:
-            raise ValidationError("Merchant Key is required.")
+            return
         try: 
             if merchant_api.validate_merchant_key(merchant_key):
                 title = _("Success!")
@@ -48,13 +60,16 @@ class DeliveryCarrier(models.Model):
                     }
                 }
         except Exception as e:
-                raise ValidationError(f"Error during validation: {str(e)}")
+            raise ValidationError(f"Error during validation: {str(e)}")
 
     def _radish_merchant_api(self):
-        return RadishMerchantApi('merchants', merchant_key=self.radish_merchant_key)
+        return RadishMerchantApi('merchants', debug_logging=self.log_xml)
     
     def _radish_order_api(self):
-        return RadishOrderApi('merchants/orders', merchant_key=self.radish_merchant_key)
+        merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
+        if not merchant_key:
+            raise UserError("No merchant key found for the selected environment.")
+        return RadishOrderApi('merchants/orders', merchant_key=merchant_key, debug_logging=self.log_xml)
     
     def radish_rate_shipment(self, order):
         """Compute the price of the order shipment
@@ -122,9 +137,6 @@ class DeliveryCarrier(models.Model):
                     })
 
             response = api.confirm_order(picking, packages)
-
-            if response.status_code != 200:
-                raise ValidationError(_('Failed to send the order to the delivery carrier.'))
             response_data = response.json()
             results.append({
                 'exact_price': self.fixed_price,
@@ -154,7 +166,5 @@ class DeliveryCarrier(models.Model):
         :return: bool: True if the shipment was successfully canceled
         """
         self.ensure_one()
-        response = self._radish_order_api().cancel_order(picking)
-        if response.status_code != 200:
-            raise ValidationError(_('Failed to cancel the order with the delivery carrier.'))
+        self._radish_order_api().cancel_order(picking)
         return True

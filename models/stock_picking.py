@@ -11,8 +11,9 @@ class StockPicking(models.Model):
     def action_confirm(self):
         res = super(StockPicking, self).action_confirm()
 
-        if self.delivery_type == 'radish':
-            self.carrier_id._radish_order_api().initialize_order(self)
+        for pick in self:
+            if pick.delivery_type == 'radish' and pick.carrier_id and pick.carrier_id.integration_level == 'rate_and_ship' and pick.picking_type_code != 'incoming' and not pick.carrier_tracking_ref and pick.picking_type_id.print_label:
+                pick.carrier_id._radish_order_api().initialize_order(pick)
 
         return res
 
