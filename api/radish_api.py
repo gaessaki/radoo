@@ -70,8 +70,12 @@ class RadishApi:
         if status_code == 500:
             raise ValidationError("Internal server error. Please contact Radish support if this problem persists.")
         if status_code != 200:
-            error_message = API_ERROR_MESSAGES.get(response.json().get('error'), response.json().get('error'))
-            raise ValidationError("Request failed with status code %s : \n%s" % status_code, error_message)
+            try:
+                error_message = API_ERROR_MESSAGES.get(response.json().get('error'), response.json().get('error'))
+            except Exception:
+                error_message = response.text
+
+            raise ValidationError("Request failed with status code %s : \n%s" % (status_code, error_message))
 
         return response
 
