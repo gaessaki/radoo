@@ -56,16 +56,26 @@ class RadishApi:
             )
         except requests.exceptions.RequestException as e:
             self.debug_logging("Request failed", "%s %s" % (method, path))
-            raise ValidationError("Failed to connect to the Radish API Server.")            
-        
-        self.debug_logging("Response is %s" % response.text, "%s %s" % (method, path))
-        
+            raise ValidationError("Failed to connect to the Radish API Server.")
+
+        content_type = response.headers['content-type']
+        if content_type == 'application/pdf':
+            response_text = response.content
+        else:
+            response_text = response.text
+
+        self.debug_logging("Response is %s" % response_text, "%s %s" % (method, path))
+
         status_code = response.status_code
         if status_code == 500:
             raise ValidationError("Internal server error. Please contact Radish support if this problem persists.")
         if status_code != 200:
-            error_message = API_ERROR_MESSAGES.get(response.json().get('error'), response.json().get('error'))
-            raise ValidationError("Request failed with status code %s : \n%s" % status_code, error_message)
+            try:
+                error_message = API_ERROR_MESSAGES.get(response.json().get('error'), response.json().get('error'))
+            except Exception:
+                error_message = response.text
+
+            raise ValidationError("Request failed with status code %s : \n%s" % (status_code, error_message))
 
         return response
 
