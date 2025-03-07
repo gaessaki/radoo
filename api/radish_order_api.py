@@ -59,7 +59,7 @@ class RadishOrderApi(RadishApi):
         if not response:
             raise Exception(404, 'Could not find labels!')
         
-        content_type = response.headers['content-type']
+        content_type = response.headers.get('content-type', None)
         if content_type != 'application/pdf':
             raise Exception(500, 'Invalid content type')
 

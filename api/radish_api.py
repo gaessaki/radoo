@@ -2,7 +2,7 @@ import json
 import logging
 
 import requests
-from odoo.exceptions import ValidationError, UserError
+from odoo.exceptions import ValidationError
 
 _logger = logging.getLogger(__name__)
 
@@ -11,13 +11,14 @@ TIMEOUT = '15'
 API_URL = 'https://tatsoi.azurewebsites.net/api/'
 
 API_ERROR_MESSAGES = {
-    'InvalidMerchantKey': 'No merchant key was provided. Make sure you have a key for the current environment.',
-    'MerchantKeyNotFound': 'The provided merchant key is invalid. Please check the key and try again.',
-    'MerchantStatusNotActive': 'The provided merchant key is not active. Please contact Radish support.',
-    'MissingOrders': 'No orders were provided in the request.',
-    'OrderNotFound': 'No order found for the provided order reference.',
+    'InvalidMerchantKey':               'No merchant key was provided. Make sure you have a key for the current environment.',
+    'MerchantKeyNotFound':              'The provided merchant key is invalid. Please check the key and try again.',
+    'MerchantStatusNotActive':          'The provided merchant key is not active. Please contact Radish support.',
+    'MissingOrders':                    'No orders were provided in the request.',
+    'OrderNotFound':                    'No order found for the provided order reference.',
     'AttemptingToModifyCompletedOrder': 'The order has already been completed and cannot be modified.',
 }
+
 
 class RadishApi:
     def __init__(self, endpoint, af_key=AF_KEY, merchant_key=None, debug_logging=None):
@@ -34,9 +35,9 @@ class RadishApi:
 
     def request(self, method, path, json_data):
         headers = {
-            "Content-Type":     "application/json",
-            "x-functions-key":  self.af_key,
-            "timeout":          TIMEOUT
+            "Content-Type":    "application/json",
+            "x-functions-key": self.af_key,
+            "timeout":         TIMEOUT
         }
 
         if self.merchant_key:
@@ -44,9 +45,9 @@ class RadishApi:
 
         url = self.base_url + path
         logged_headers = {k: v for k, v in headers.items() if k != 'x-functions-key'}
-        self.debug_logging("Request: %s %s \nHeaders: %s \nPayload: %s" % (method, url, json.dumps(logged_headers, indent=2), json.dumps(json_data, indent=2)), 
+        self.debug_logging("Request: %s %s \nHeaders: %s \nPayload: %s" % (method, url, json.dumps(logged_headers, indent=2), json.dumps(json_data, indent=2)),
                            "%s %s" % (method, path))
-    
+
         try:
             response = requests.request(
                 method,
@@ -58,7 +59,7 @@ class RadishApi:
             self.debug_logging("Request failed", "%s %s" % (method, path))
             raise ValidationError("Failed to connect to the Radish API Server.")
 
-        content_type = response.headers['content-type']
+        content_type = response.headers.get('content-type', None)
         if content_type == 'application/pdf':
             response_text = response.content
         else:
@@ -81,6 +82,6 @@ class RadishApi:
 
     def get(self, path):
         return self.request('get', path, None)
-    
+
     def post(self, path, data):
         return self.request('post', path, data)
