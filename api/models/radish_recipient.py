@@ -8,7 +8,7 @@ class RadishRecipient(RadishObject):
         """
         :param picking_partner: Partner record of the picking
         """
-        self.first = picking_partner.name or picking_partner.commercial_partner_id.name or ''
+        self.first = picking_partner.name or picking_partner.commercial_company_name or ''
         self.last = ''
         self.company = picking_partner.commercial_company_name
         self.phone = picking_partner.phone
