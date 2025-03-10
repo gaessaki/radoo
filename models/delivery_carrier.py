@@ -144,7 +144,7 @@ class DeliveryCarrier(models.Model):
             })
             try:
                 # Pre generate the label
-                picking.ensure_radish_label_attachment()
+                picking._create_radish_label_attachment()
             except Exception as e:
                 _logger.exception(e)              
 
