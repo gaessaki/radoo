@@ -1,6 +1,6 @@
 {
     'name': 'Radoo',
-    'version': '15.0.0.1',
+    'version': '18.0.0.0',
     'author': 'Radish Cooperative',
     'summary': 'Fast, affordable local delivery with Radish!',
     'category': 'eCommerce',
@@ -8,7 +8,10 @@
     'external_dependencies': {
         'python': ['html2text']
     },
-    'depends': ['stock', 'delivery', 'sale'],
+    'depends': [
+        'sale',
+        'stock_delivery',
+    ],
     'data': [
         'views/delivery_carrier_view.xml',
         'views/stock_picking_views.xml',
