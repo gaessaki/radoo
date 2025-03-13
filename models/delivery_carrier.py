@@ -107,9 +107,9 @@ class DeliveryCarrier(models.Model):
         for picking in pickings:
             packages = []
             if len(picking.partner_id):
-                if not len(picking.package_ids):
+                if not len(picking.quant_package_ids):
                     raise UserError(_('No packages found for picking %s.') % picking.name)
-                for package in picking.package_ids:
+                for package in picking.quant_package_ids:
                     if not len(package.package_type_id):
                         raise ValidationError(_('No package type found for package %s.') % package.name)
                     package_type = package.package_type_id
