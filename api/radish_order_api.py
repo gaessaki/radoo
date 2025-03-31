@@ -21,7 +21,7 @@ class RadishOrderApi(RadishApi):
         partner = picking.partner_id
         
         recipient = RadishRecipient(partner)
-        address = RadishAddress(partner)
+        address = RadishAddress(partner, picking)
         order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
     
         body = { 'order': order.toJSON(), 'platform': 'radoo' }        
@@ -31,7 +31,7 @@ class RadishOrderApi(RadishApi):
         partner = picking.partner_id
 
         recipient = RadishRecipient(partner)
-        address = RadishAddress(partner)
+        address = RadishAddress(partner, picking)
         order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
 
         body = { 'order': order.toJSON(), 'parcels': packages, 'platform': 'radoo', 'confirm': True }
