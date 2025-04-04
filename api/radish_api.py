@@ -1,5 +1,6 @@
 import json
 import logging
+from odoo.tools.translate import _lt
 
 import requests
 from odoo.exceptions import ValidationError
@@ -11,14 +12,14 @@ TIMEOUT = '15'
 API_URL = 'https://tatsoi.azurewebsites.net/api/'
 
 API_ERROR_MESSAGES = {
-    'InvalidMerchantKey':               'No merchant key was provided. Make sure you have a key for the current environment.',
-    'MerchantKeyNotFound':              'The provided merchant key is invalid. Please check the key and try again.',
-    'MerchantStatusNotActive':          'The provided merchant key is not active. Please contact Radish support.',
-    'MissingOrders':                    'No orders were provided in the request.',
-    'OrderNotFound':                    'No order found for the provided order reference.',
-    'AttemptingToModifyCompletedOrder': 'The order has already been completed and cannot be modified.',
+    'InvalidMerchantKey':               _lt('No merchant key was provided. Please ensure that a key is configured for the current environment.'),
+    'MerchantKeyNotFound':              _lt('The provided merchant key is invalid. Please check the key and try again.'),
+    'MerchantStatusNotActive':          _lt('The provided merchant key is not active. Please contact Radish support.'),
+    'MissingOrders':                    _lt('No orders were provided in the request.'),
+    'OrderNotFound':                    _lt('No order was found for the provided order reference.'),
+    'AttemptingToModifyCompletedOrder': _lt('The order has already been completed and can no longer be modified.'),
+    'LowAddressPrecision':              _lt("The provided delivery address could not be verified. Please ensure that all address details are accurate and complete. Delivery instructions should be entered separately from the address fields."),
 }
-
 
 class RadishApi:
     def __init__(self, endpoint, af_key=AF_KEY, merchant_key=None, debug_logging=None):
@@ -57,7 +58,7 @@ class RadishApi:
             )
         except requests.exceptions.RequestException as e:
             self.debug_logging("Request failed", "%s %s" % (method, path))
-            raise ValidationError("Failed to connect to the Radish API Server.")
+            raise ValidationError(_lt("Failed to connect to the Radish API Server."))
 
         content_type = response.headers.get('content-type', None)
         if content_type == 'application/pdf':
@@ -69,14 +70,14 @@ class RadishApi:
 
         status_code = response.status_code
         if status_code == 500:
-            raise ValidationError("Internal server error. Please contact Radish support if this problem persists.")
+            raise ValidationError(_lt("Internal server error. Please contact Radish support if this problem persists."))
         if status_code != 200:
             try:
                 error_message = API_ERROR_MESSAGES.get(response.json().get('error'), response.json().get('error'))
             except Exception:
                 error_message = response.text
 
-            raise ValidationError("Request failed with status code %s : \n%s" % (status_code, error_message))
+            raise ValidationError(_lt("Request failed with status code %s : \n%s") % (status_code, error_message))
 
         return response
 

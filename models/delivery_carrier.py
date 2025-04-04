@@ -19,12 +19,12 @@ class DeliveryCarrier(models.Model):
     )
     
     radish_prod_merchant_key = fields.Char(
-        string='Production Merchant Key',
+        string='Merchant Key (Production)',
         help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
     )
 
     radish_test_merchant_key = fields.Char(
-        string='Test Merchant Key',
+        string='Merchant Key (Test)',
         help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
     )
 

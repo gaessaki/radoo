@@ -6,39 +6,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 16.0-20250123\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-02-11 18:46+0000\n"
-"PO-Revision-Date: 2025-02-11 18:46+0000\n"
+"POT-Creation-Date: 2025-04-04 16:59+0000\n"
+"PO-Revision-Date: 2025-04-04 14:36-0400\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: \n"
-"Plural-Forms: \n"
-
-#. module: radoo
-#. odoo-python
-#: code:addons/radoo/models/stock_package_type.py:0
-#, python-format
-msgid "%s doesn't have a carrier code."
-msgstr "%s n’a pas de code transporteur."
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.5\n"
 
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.view_picking_form_inherit
-msgid ""
-"<span class=\"radish_get_label\">\n"
-"                            Get Label\n"
-"                        </span>"
-msgstr ""
-"<span class=\"radish_get_label\">\n"
-"                            Obtenir l’étiquette\n"
-"                        </span>"
-
-#. module: radoo
-#. odoo-python
-#: code:addons/radoo/models/stock_picking.py:0
-#, python-format
-msgid "A tracking reference is required to print %s's label."
-msgstr "Une référence de suivi est requise pour imprimer l’étiquette de %s."
+msgid "<span class=\"radish_get_label\">Get Label</span>"
+msgstr "<span class=\"radish_get_label\">Obtenir l’étiquette</span>"
 
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_stock_package_type__package_carrier_type
@@ -47,10 +29,10 @@ msgstr "Transporteur"
 
 #. module: radoo
 #. odoo-python
-#: code:addons/radoo/models/delivery_carrier.py:0
+#: code:addons/radoo/api/radish_api.py:0
 #, python-format
-msgid "Failed to cancel the order with the delivery carrier."
-msgstr "Impossible d'annuler la commande auprès du transporteur."
+msgid "Failed to connect to the Radish API Server."
+msgstr "Échec de la connexion au serveur API Radish."
 
 #. module: radoo
 #. odoo-python
@@ -60,16 +42,30 @@ msgid "Failed to retrieve the label from the delivery carrier API."
 msgstr "Échec de la récupération de l’étiquette auprès du transporteur."
 
 #. module: radoo
-#. odoo-python
-#: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
-msgid "Failed to send the order to the delivery carrier."
-msgstr "Échec de l’envoi de la commande au transporteur."
+#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_fixed_price
+msgid "Fixed Price"
+msgstr "Pris fixe"
 
 #. module: radoo
-#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_merchant_key
-msgid "Merchant Key"
-msgstr "Clé marchande"
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid ""
+"Internal server error. Please contact Radish support if this problem "
+"persists."
+msgstr ""
+"Erreur de serveur interne. Veuillez contacter le support Radish si ce "
+"problème persiste."
+
+#. module: radoo
+#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_prod_merchant_key
+msgid "Merchant Key (Production)"
+msgstr "Clé marchand (production)"
+
+#. module: radoo
+#: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_test_merchant_key
+msgid "Merchant Key (Test)"
+msgstr "Clé marchand (test)"
 
 #. module: radoo
 #. odoo-python
@@ -88,6 +84,31 @@ msgid ""
 msgstr ""
 "Aucun colis Radish sélectionné. Vous avez peut-être sélectionné des "
 "commandes d’autres transporteurs."
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid ""
+"No merchant key was provided. Please ensure that a key is configured for the "
+"current environment."
+msgstr ""
+"Aucune clé de commerçant n'a été fournie. Assurez-vous d'avoir une clé pour "
+"l'environnement actuel."
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid "No order was found for the provided order reference."
+msgstr "Aucune commande n'a été trouvée pour le numéro de commande fourni."
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid "No orders were provided in the request."
+msgstr "Aucune commande n’a été fournie dans la requête."
 
 #. module: radoo
 #. odoo-python
@@ -111,6 +132,7 @@ msgstr "Fournisseur"
 #. module: radoo
 #: model:ir.model.fields.selection,name:radoo.selection__delivery_carrier__delivery_type__radish
 #: model:ir.model.fields.selection,name:radoo.selection__stock_package_type__package_carrier_type__radish
+#: model_terms:ir.ui.view,arch_db:radoo.view_picking_form_inherit
 msgid "Radish"
 msgstr "Radish"
 
@@ -118,6 +140,17 @@ msgstr "Radish"
 #: model_terms:ir.ui.view,arch_db:radoo.delivery_carrier_form_radish
 msgid "Radish Configuration"
 msgstr "Configuration Radish"
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid ""
+"Request failed with status code %s : \n"
+"%s"
+msgstr ""
+"La requête a échoué avec le code d’état %s :\n"
+"%s"
 
 #. module: radoo
 #: model:ir.model,name:radoo.model_delivery_carrier
@@ -137,20 +170,55 @@ msgid "Success!"
 msgstr "Succès !"
 
 #. module: radoo
-#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_merchant_key
+#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_prod_merchant_key
+#: model:ir.model.fields,help:radoo.field_delivery_carrier__radish_test_merchant_key
 msgid ""
 "The merchant key for the Radish API. You can request a merchant key from "
 "your Radish relationship manager."
 msgstr ""
-"Clé marchande pour l'API Radish. Vous pouvez demander une clé marchande à "
+"La clé marchand pour l'API Radish. Vous pouvez demander une clé marchande à "
 "votre gestionnaire de relation Radish."
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid "The order has already been completed and can no longer be modified."
+msgstr "La commande a déjà été complétée et ne peut plus être modifiée."
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid ""
+"The provided delivery address could not be verified. Please ensure that all "
+"address details are accurate and complete. Delivery instructions should be "
+"entered separately from the address fields."
+msgstr ""
+"L’adresse de livraison fournie n’a pas pu être vérifiée. Veuillez vous "
+"assurer que tous les détails de l’adresse sont exacts et complets. Les "
+"instructions de livraison doivent être saisies séparément des champs "
+"d’adresse."
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid ""
+"The provided merchant key is invalid. Please check the key and try again."
+msgstr ""
+"La clé marchand fournie est invalide. Veuillez vérifier la clé et réessayer."
+
+#. module: radoo
+#. odoo-python
+#: code:addons/radoo/api/radish_api.py:0
+#, python-format
+msgid "The provided merchant key is not active. Please contact Radish support."
+msgstr ""
+"La clé marchand fournie n'est pas active. Veuillez contacter le support "
+"Radish."
 
 #. module: radoo
 #: model:ir.model,name:radoo.model_stock_picking
 msgid "Transfer"
 msgstr "Transfert"
-
-#. module: radoo
-#: model_terms:ir.ui.view,arch_db:radoo.delivery_carrier_form_radish
-msgid "Validate"
-msgstr "Valider"
