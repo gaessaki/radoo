@@ -18,7 +18,7 @@ msgstr ""
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/stock_package_type.py:0
-#, python-format
+#. odoo-python
 msgid "%s doesn't have a carrier code."
 msgstr "%s n’a pas de code transporteur."
 
@@ -36,7 +36,7 @@ msgstr ""
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/stock_picking.py:0
-#, python-format
+#. odoo-python
 msgid "A tracking reference is required to print %s's label."
 msgstr "Une référence de suivi est requise pour imprimer l’étiquette de %s."
 
@@ -48,21 +48,21 @@ msgstr "Transporteur"
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
+#. odoo-python
 msgid "Failed to cancel the order with the delivery carrier."
 msgstr "Impossible d'annuler la commande auprès du transporteur."
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/stock_picking.py:0
-#, python-format
+#. odoo-python
 msgid "Failed to retrieve the label from the delivery carrier API."
 msgstr "Échec de la récupération de l’étiquette auprès du transporteur."
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
+#. odoo-python
 msgid "Failed to send the order to the delivery carrier."
 msgstr "Échec de l’envoi de la commande au transporteur."
 
@@ -74,14 +74,14 @@ msgstr "Clé marchande"
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
+#. odoo-python
 msgid "Merchant Key Validated Successfully!"
 msgstr "La clé marchand a été validée avec succès !"
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
+#. odoo-python
 msgid ""
 "No Radish stock pickings are selected. You might have selected orders from "
 "other carriers."
@@ -92,14 +92,14 @@ msgstr ""
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
+#. odoo-python
 msgid "No package type found for package %s."
 msgstr "Aucun type d’emballage trouvé pour le colis %s."
 
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
+#. odoo-python
 msgid "No packages found for picking %s."
 msgstr "Aucun colis disponible pour le ramassage %s."
 
@@ -132,7 +132,7 @@ msgstr "Type de colis de stock"
 #. module: radoo
 #. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
-#, python-format
+#. odoo-python
 msgid "Success!"
 msgstr "Succès !"
 
