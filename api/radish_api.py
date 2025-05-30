@@ -17,7 +17,7 @@ API_ERROR_MESSAGES = {
     'MerchantStatusNotActive':          _lt('The provided merchant key is not active. Please contact Radish support.'),
     'MissingOrders':                    _lt('No orders were provided in the request.'),
     'OrderNotFound':                    _lt('No order was found for the provided order reference.'),
-    'AttemptingToModifyCompletedOrder': _lt('The order has already been completed and can no longer be modified.'),
+    'OrderAlreadyCompleted':            _lt('The order has already been completed and can no longer be modified.'),
     'LowAddressPrecision':              _lt("The provided delivery address could not be verified. Please ensure that all address details are accurate and complete. Delivery instructions should be entered separately from the address fields."),
 }
 
