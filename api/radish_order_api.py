@@ -4,6 +4,7 @@ from odoo.addons.radoo.api.models.radish_recipient import RadishRecipient
 from .radish_api import RadishApi
 from odoo.exceptions import UserError
 
+
 class RadishOrderApi(RadishApi):
     # def fetch_orders(self, order_ids): 
     #     if not isinstance(order_ids, list):
@@ -16,17 +17,19 @@ class RadishOrderApi(RadishApi):
     #         query_string += f'order_refs={order_id}'
 
     #     return self.get(query_string)
-    
+
     def initialize_order(self, picking):
         partner = picking.partner_id
-        
+
         recipient = RadishRecipient(partner)
         address = RadishAddress(partner, picking)
         order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
-    
-        body = { 'order': order.toJSON(), 'platform': 'radoo' }        
+
+        body = {'order': order.toJSON(), 'platform': 'radoo'}
+        if picking.carrier_id.radish_service_code:
+            body['service_code'] = picking.carrier_id.radish_service_code
         return self.post('', body)
- 
+
     def confirm_order(self, picking, packages):
         partner = picking.partner_id
 
@@ -34,17 +37,19 @@ class RadishOrderApi(RadishApi):
         address = RadishAddress(partner, picking)
         order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
 
-        body = { 'order': order.toJSON(), 'parcels': packages, 'platform': 'radoo', 'confirm': True }
+        body = {'order': order.toJSON(), 'parcels': packages, 'platform': 'radoo', 'confirm': True}
+        if picking.carrier_id.radish_service_code:
+            body['service_code'] = picking.carrier_id.radish_service_code
         return self.post('', body)
-    
+
     def cancel_order(self, picking):
         order = [{
-            'ref': picking.name, 
+            'ref':    picking.name,
             'status': 'cancelled',
         }]
-        
+
         return self.request('patch', '', {'orders': order})
-    
+
     def fetch_labels(self, order_ids):
         if not isinstance(order_ids, list):
             order_ids = [order_ids]
@@ -55,13 +60,12 @@ class RadishOrderApi(RadishApi):
             query_string += f'order_refs={order_id}'
 
         response = self.get('/labels?' + query_string)
-    
+
         if not response:
             raise Exception(404, 'Could not find labels!')
-        
+
         content_type = response.headers.get('content-type', None)
         if content_type != 'application/pdf':
             raise Exception(500, 'Invalid content type')
 
         return response
-
