@@ -4,18 +4,16 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 16.0-20250123\n"
+"Project-Id-Version: Odoo Server 15.0+e\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-04 16:59+0000\n"
-"PO-Revision-Date: 2025-04-04 14:36-0400\n"
+"POT-Creation-Date: 2025-07-24 14:39+0000\n"
+"PO-Revision-Date: 2025-07-24 14:39+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 3.5\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
 
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.view_picking_form_inherit
@@ -28,14 +26,18 @@ msgid "Carrier"
 msgstr "Transporteur"
 
 #. module: radoo
-#. odoo-python
+#: code:addons/radoo/models/delivery_carrier.py:0
+#, python-format
+msgid "Error during validation: %s"
+msgstr "Erreur durant la validation : %s"
+
+#. module: radoo
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid "Failed to connect to the Radish API Server."
 msgstr "Échec de la connexion au serveur API Radish."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/models/stock_picking.py:0
 #, python-format
 msgid "Failed to retrieve the label from the delivery carrier API."
@@ -47,7 +49,6 @@ msgid "Fixed Price"
 msgstr "Pris fixe"
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid ""
@@ -68,14 +69,12 @@ msgid "Merchant Key (Test)"
 msgstr "Clé marchand (test)"
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
 msgid "Merchant Key Validated Successfully!"
 msgstr "La clé marchand a été validée avec succès !"
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
 msgid ""
@@ -86,39 +85,34 @@ msgstr ""
 "commandes d’autres transporteurs."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid ""
-"No merchant key was provided. Please ensure that a key is configured for the "
-"current environment."
+"No merchant key was provided. Please ensure that a key is configured for the"
+" current environment."
 msgstr ""
 "Aucune clé de commerçant n'a été fournie. Assurez-vous d'avoir une clé pour "
 "l'environnement actuel."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid "No order was found for the provided order reference."
 msgstr "Aucune commande n'a été trouvée pour le numéro de commande fourni."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid "No orders were provided in the request."
 msgstr "Aucune commande n’a été fournie dans la requête."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
 msgid "No package type found for package %s."
 msgstr "Aucun type d’emballage trouvé pour le colis %s."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
 msgid "No packages found for picking %s."
@@ -134,7 +128,7 @@ msgstr "Fournisseur"
 #: model:ir.model.fields.selection,name:radoo.selection__stock_package_type__package_carrier_type__radish
 #: model_terms:ir.ui.view,arch_db:radoo.view_picking_form_inherit
 msgid "Radish"
-msgstr "Radish"
+msgstr ""
 
 #. module: radoo
 #: model_terms:ir.ui.view,arch_db:radoo.delivery_carrier_form_radish
@@ -142,7 +136,6 @@ msgid "Radish Configuration"
 msgstr "Configuration Radish"
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid ""
@@ -163,7 +156,6 @@ msgid "Stock package type"
 msgstr "Type de colis de stock"
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/models/delivery_carrier.py:0
 #, python-format
 msgid "Success!"
@@ -180,14 +172,12 @@ msgstr ""
 "votre gestionnaire de relation Radish."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid "The order has already been completed and can no longer be modified."
 msgstr "La commande a déjà été complétée et ne peut plus être modifiée."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid ""
@@ -201,7 +191,6 @@ msgstr ""
 "d’adresse."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
 msgid ""
@@ -210,10 +199,10 @@ msgstr ""
 "La clé marchand fournie est invalide. Veuillez vérifier la clé et réessayer."
 
 #. module: radoo
-#. odoo-python
 #: code:addons/radoo/api/radish_api.py:0
 #, python-format
-msgid "The provided merchant key is not active. Please contact Radish support."
+msgid ""
+"The provided merchant key is not active. Please contact Radish support."
 msgstr ""
 "La clé marchand fournie n'est pas active. Veuillez contacter le support "
 "Radish."
