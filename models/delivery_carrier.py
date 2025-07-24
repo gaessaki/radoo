@@ -27,6 +27,10 @@ class DeliveryCarrier(models.Model):
         help='The merchant key for the Radish API. You can request a merchant key from your Radish relationship manager.',
     )
 
+    radish_service_code = fields.Char(
+        string='Radish Service Code',
+    )
+
     radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
 
     # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)

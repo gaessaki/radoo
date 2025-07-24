@@ -1,20 +1,21 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-    <record id="delivery_carrier_form_radish" model="ir.ui.view">
-        <field name="name">delivery.carrier.form.provider.radish</field>
-        <field name="model">delivery.carrier</field>
-        <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
-        <field name="arch" type="xml">
-        <xpath expr="//page[@name='destination']" position='before'>
-            <page string="Radish Configuration" attrs="{'invisible': [('delivery_type', '!=', 'radish')]}">
-            <group>
-                <field name="radish_prod_merchant_key" autocomplete="off"/>
-                <field name="radish_test_merchant_key" autocomplete="off"/>
-                <field name="radish_fixed_price" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
-                <!-- <field name="show_radish_bulk_print"/> -->
-            </group>
-            </page>
-        </xpath>
-        </field>
-    </record>
+  <record id="delivery_carrier_form_radish" model="ir.ui.view">
+    <field name="name">delivery.carrier.form.provider.radish</field>
+    <field name="model">delivery.carrier</field>
+    <field name="inherit_id" ref="delivery.view_delivery_carrier_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//page[@name='destination']" position='before'>
+        <page string="Radish Configuration" attrs="{'invisible': [('delivery_type', '!=', 'radish')]}">
+          <group>
+            <field name="radish_prod_merchant_key" autocomplete="off"/>
+            <field name="radish_test_merchant_key" autocomplete="off"/>
+            <field name="radish_service_code"/>
+            <field name="radish_fixed_price" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
+            <!-- <field name="show_radish_bulk_print"/> -->
+          </group>
+        </page>
+      </xpath>
+    </field>
+  </record>
 </odoo>
