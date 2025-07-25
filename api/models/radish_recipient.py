@@ -4,31 +4,39 @@ from .radish_object import RadishObject
 class RadishRecipient(RadishObject):
     def __init__(
             self,
-            picking_partner
+            first,
+            last,
+            company,
+            phone,
+            email,
+            language=None
     ):
-        """
-        :param picking_partner: Partner record of the picking
-        """
-        self.first = picking_partner.name or picking_partner.commercial_company_name or ''
-        self.last = ''
-        self.company = picking_partner.commercial_company_name
+        self.first = first
+        self.last = last
+        self.company = company
+        self.phone = phone
+        self.email = email
+        self.language = language
 
-        current_partner = picking_partner
-        self.phone = current_partner.phone
-        self.email = current_partner.email
-        while current_partner and (not self.phone or not self.email):
-            if not self.phone:
-                self.phone = current_partner.phone
-            if not self.email:
-                self.email = current_partner.email
+    @staticmethod
+    def sanitize_lang(lang):
+        lang = lang or ''
 
-            current_partner = current_partner.parent_id
+        lang = lang.lower()
+        if lang.startswith('fr'):
+            return 'fr'
+        elif lang.startswith('en'):
+            return 'en'
+        return None
 
     def toJSON(self):
-        return {
+        json = {
             'first':   self.first,
             'last':    self.last,
             'company': self.company,
             'phone':   self.phone,
             'email':   self.email,
         }
+        if self.language:
+            json['language'] = self.language
+        return json

@@ -19,11 +19,7 @@ class RadishOrderApi(RadishApi):
     #     return self.get(query_string)
 
     def initialize_order(self, picking):
-        partner = picking.partner_id
-
-        recipient = RadishRecipient(partner)
-        address = RadishAddress(partner, picking)
-        order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
+        order = picking.to_radish_order()
 
         body = {'order': order.toJSON(), 'platform': 'radoo'}
         if picking.carrier_id.radish_service_code:
@@ -31,11 +27,7 @@ class RadishOrderApi(RadishApi):
         return self.post('', body)
 
     def confirm_order(self, picking, packages):
-        partner = picking.partner_id
-
-        recipient = RadishRecipient(partner)
-        address = RadishAddress(partner, picking)
-        order = RadishOrder(order_ref=picking.name, recipient=recipient, address=address)
+        order = picking.to_radish_order()
 
         body = {'order': order.toJSON(), 'parcels': packages, 'platform': 'radoo', 'confirm': True}
         if picking.carrier_id.radish_service_code:
