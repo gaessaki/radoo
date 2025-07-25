@@ -1,8 +1,12 @@
 import base64
 import logging
 
-from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError, UserError
+from odoo import models, _
+from odoo.addons.radoo.api.models.radish_address import RadishAddress
+from odoo.addons.radoo.api.models.radish_order import RadishOrder
+from odoo.addons.radoo.api.models.radish_recipient import RadishRecipient
+from odoo.exceptions import ValidationError
+from ..api.radish_utils import radish_html2text
 
 _logger = logging.getLogger(__name__)
 
@@ -23,6 +27,60 @@ class StockPicking(models.Model):
                     _logger.exception(e)
 
         return res
+
+    def to_radish_address(self):
+        self.ensure_one()
+        address = RadishAddress(
+            self.partner_id.street,
+            self.partner_id.street2,
+            self.partner_id.city,
+            self.partner_id.state_id.name,
+            self.partner_id.zip,
+            self.partner_id.country_id.name,
+            radish_html2text(self.note),
+        )
+        return address
+
+    def to_radish_recipient(self):
+        self.ensure_one()
+        partner = self.partner_id
+        first = partner.name or partner.commercial_company_name or ''
+        last = ''
+        company = partner.commercial_company_name
+
+        current_partner = partner
+        phone = current_partner.phone
+        email = current_partner.email
+        lang = current_partner.lang
+        while current_partner and (not phone or not email or not lang):
+            if not lang:
+                lang = current_partner.lang
+            if not phone:
+                phone = current_partner.phone
+                # In priority, take the same language as the partner's phone
+                lang = current_partner.lang or lang
+            if not email:
+                email = current_partner.email
+                # In priority, take the same language as the partner's email
+                lang = current_partner.lang or lang
+
+            current_partner = current_partner.parent_id
+        lang = RadishRecipient.sanitize_lang(lang)
+        recipient = RadishRecipient(
+            first,
+            last,
+            company,
+            phone,
+            email,
+            lang
+        )
+        return recipient
+
+    def to_radish_order(self):
+        self.ensure_one()
+        recipient = self.to_radish_recipient()
+        address = self.to_radish_address()
+        return RadishOrder(order_ref=self.name, recipient=recipient, address=address)
 
     def get_radish_attachment(self):
         self.ensure_one()
