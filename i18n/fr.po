@@ -46,7 +46,7 @@ msgstr "Échec de la récupération de l’étiquette auprès du transporteur."
 #. module: radoo
 #: model:ir.model.fields,field_description:radoo.field_delivery_carrier__radish_fixed_price
 msgid "Fixed Price"
-msgstr "Pris fixe"
+msgstr "Prix fixe"
 
 #. module: radoo
 #: code:addons/radoo/api/radish_api.py:0
