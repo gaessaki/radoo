@@ -1,4 +1,9 @@
 import logging
+from dataclasses import dataclass
+from datetime import datetime, date
+from typing import List
+
+from ebaysdk import merchandising
 
 from odoo import api
 from odoo import models, fields, _
@@ -66,7 +71,10 @@ class DeliveryCarrier(models.Model):
             raise ValidationError(_("Error during validation: %s") % e)
 
     def _radish_merchant_api(self):
-        return RadishMerchantApi('merchants', debug_logging=self.log_xml)
+        merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
+        if not merchant_key:
+            raise UserError("No merchant key found for the selected environment.")
+        return RadishMerchantApi('merchants', merchant_key=merchant_key, debug_logging=self.log_xml)
 
     def _radish_order_api(self):
         merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
@@ -84,12 +92,21 @@ class DeliveryCarrier(models.Model):
                        'warning_message': a string containing a warning message}
         """
         self.ensure_one()
+        api = self._radish_merchant_api()
 
-        price = self.radish_fixed_price
+        response = api.get_delivery_pricing(order)
+        response_data = response.json()
+
+        price = response_data["rates"][0]["cost"]["amount"] / 100
+        date_predictions: list[DatePredictions] = [DatePredictions(prediction["date"], prediction["value"]) for prediction in response_data["rates"][0]["datePredicitons"]]
+
         return {
-            'success':         True,
-            'price':           price,
-            'warning_message': None,
+            'success':                      True,
+            'price':                        price,
+            'expected_delivery_date':       _expected_delivery_date(date_predictions),
+            'expected_delivery_date_min':   _expected_delivery_date_min(date_predictions),
+            'expected_delivery_date_max':   _expected_delivery_date_max(date_predictions),
+            'warning_message':              None,
         }
 
     def radish_send_shipping(self, pickings):
@@ -171,3 +188,32 @@ class DeliveryCarrier(models.Model):
         self.ensure_one()
         self._radish_order_api().cancel_order(picking)
         return True
+
+@dataclass
+class DatePredictions:
+    date: date
+    percentage: float
+
+def _expected_delivery_date(self, delivery_dates: List[DatePredictions]) -> date:
+    """Return the most probable delivery date for this order.
+
+    :param delivery_dates: List of delivery dates and their percentages.
+    :return: The most probable delivery date.
+    """
+    return max(delivery_dates, key=lambda d: d.percentage).date
+
+def _expected_delivery_date_max(self, delivery_dates: List[DatePredictions]) -> date:
+    """Return the latest delivery date for this order.
+
+    :param delivery_dates: List of delivery dates and their percentages.
+    :return: The latest delivery date.
+    """
+    return max(delivery_dates, key=lambda d: d.date).date
+
+def _expected_delivery_date_min(self, delivery_dates: List[DatePredictions]) -> date:
+    """Return the earliest delivery date for this order.
+
+    :param delivery_dates: List of delivery dates and their percentages.
+    :return: The earliest delivery date.
+    """
+    return min(delivery_dates, key=lambda d: d.date).date
