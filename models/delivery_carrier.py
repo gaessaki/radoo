@@ -98,14 +98,18 @@ class DeliveryCarrier(models.Model):
         response_data = response.json()
 
         price = response_data["rates"][0]["cost"]["amount"] / 100
+
         date_predictions: list[DatePredictions] = [DatePredictions(prediction["date"], prediction["value"]) for prediction in response_data["rates"][0]["datePredicitons"]]
+        expected_delivery_date = _expected_delivery_date(date_predictions)
+        expected_delivery_date_min = _expected_delivery_date_min(date_predictions)
+        expected_delivery_date_max = _expected_delivery_date_max(date_predictions)
 
         return {
             'success':                      True,
             'price':                        price,
-            'expected_delivery_date':       _expected_delivery_date(date_predictions),
-            'expected_delivery_date_min':   _expected_delivery_date_min(date_predictions),
-            'expected_delivery_date_max':   _expected_delivery_date_max(date_predictions),
+            'expected_delivery_date':       expected_delivery_date,
+            'expected_delivery_date_min':   expected_delivery_date_min,
+            'expected_delivery_date_max':   expected_delivery_date_max,
             'warning_message':              None,
         }
 
@@ -194,7 +198,7 @@ class DatePredictions:
     date: date
     percentage: float
 
-def _expected_delivery_date(self, delivery_dates: List[DatePredictions]) -> date:
+def _expected_delivery_date(delivery_dates: List[DatePredictions]) -> date:
     """Return the most probable delivery date for this order.
 
     :param delivery_dates: List of delivery dates and their percentages.
@@ -202,7 +206,7 @@ def _expected_delivery_date(self, delivery_dates: List[DatePredictions]) -> date
     """
     return max(delivery_dates, key=lambda d: d.percentage).date
 
-def _expected_delivery_date_max(self, delivery_dates: List[DatePredictions]) -> date:
+def _expected_delivery_date_max(delivery_dates: List[DatePredictions]) -> date:
     """Return the latest delivery date for this order.
 
     :param delivery_dates: List of delivery dates and their percentages.
@@ -210,7 +214,7 @@ def _expected_delivery_date_max(self, delivery_dates: List[DatePredictions]) -> 
     """
     return max(delivery_dates, key=lambda d: d.date).date
 
-def _expected_delivery_date_min(self, delivery_dates: List[DatePredictions]) -> date:
+def _expected_delivery_date_min(delivery_dates: List[DatePredictions]) -> date:
     """Return the earliest delivery date for this order.
 
     :param delivery_dates: List of delivery dates and their percentages.
