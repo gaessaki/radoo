@@ -1,14 +1,12 @@
 import logging
-from dataclasses import dataclass
-from datetime import datetime, date
+from datetime import date
 from typing import List
-
-from ebaysdk import merchandising
 
 from odoo import api
 from odoo import models, fields, _
 from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
 from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
+from odoo.addons.radoo.api.radish_pricing_api import RadishPricingApi
 from odoo.exceptions import UserError, ValidationError
 
 _logger = logging.getLogger(__name__)
@@ -37,6 +35,8 @@ class DeliveryCarrier(models.Model):
     )
 
     radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
+
+    radish_fixed_shipment_rate = fields.Boolean(string='Fixed price used for shipment rates', default=False)
 
     # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)
 
@@ -71,10 +71,13 @@ class DeliveryCarrier(models.Model):
             raise ValidationError(_("Error during validation: %s") % e)
 
     def _radish_merchant_api(self):
+        return RadishMerchantApi('merchants', debug_logging=self.log_xml)
+
+    def _radish_pricing_api(self):
         merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
         if not merchant_key:
             raise UserError("No merchant key found for the selected environment.")
-        return RadishMerchantApi('merchants', merchant_key=merchant_key, debug_logging=self.log_xml)
+        return RadishPricingApi('merchants/pricing', merchant_key=merchant_key, debug_logging=self.log_xml)
 
     def _radish_order_api(self):
         merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
@@ -92,24 +95,26 @@ class DeliveryCarrier(models.Model):
                        'warning_message': a string containing a warning message}
         """
         self.ensure_one()
-        api = self._radish_merchant_api()
+
+        if self.radish_fixed_shipment_rate:
+            return {
+                'success':         True,
+                'price':           self.radish_fixed_price,
+                'warning_message': None,
+            }
+
+        api = self._radish_pricing_api()
 
         response = api.get_delivery_pricing(order)
         response_data = response.json()
 
-        price = response_data["rates"][0]["cost"]["amount"] / 100
-
-        date_predictions: list[DatePredictions] = [DatePredictions(prediction["date"], prediction["value"]) for prediction in response_data["rates"][0]["datePredicitons"]]
-        expected_delivery_date = _expected_delivery_date(date_predictions)
-        expected_delivery_date_min = _expected_delivery_date_min(date_predictions)
-        expected_delivery_date_max = _expected_delivery_date_max(date_predictions)
+        price: float = response_data["rates"][0]["cost"]["amount"] / 100
+        dates: List[tuple[date, float]] = [(prediction["date"], prediction["value"]) for prediction in response_data["rates"][0]["datePredicitons"]]
 
         return {
             'success':                      True,
             'price':                        price,
-            'expected_delivery_date':       expected_delivery_date,
-            'expected_delivery_date_min':   expected_delivery_date_min,
-            'expected_delivery_date_max':   expected_delivery_date_max,
+            'expected_delivery_dates':      dates,
             'warning_message':              None,
         }
 
@@ -192,32 +197,3 @@ class DeliveryCarrier(models.Model):
         self.ensure_one()
         self._radish_order_api().cancel_order(picking)
         return True
-
-@dataclass
-class DatePredictions:
-    date: date
-    percentage: float
-
-def _expected_delivery_date(delivery_dates: List[DatePredictions]) -> date:
-    """Return the most probable delivery date for this order.
-
-    :param delivery_dates: List of delivery dates and their percentages.
-    :return: The most probable delivery date.
-    """
-    return max(delivery_dates, key=lambda d: d.percentage).date
-
-def _expected_delivery_date_max(delivery_dates: List[DatePredictions]) -> date:
-    """Return the latest delivery date for this order.
-
-    :param delivery_dates: List of delivery dates and their percentages.
-    :return: The latest delivery date.
-    """
-    return max(delivery_dates, key=lambda d: d.date).date
-
-def _expected_delivery_date_min(delivery_dates: List[DatePredictions]) -> date:
-    """Return the earliest delivery date for this order.
-
-    :param delivery_dates: List of delivery dates and their percentages.
-    :return: The earliest delivery date.
-    """
-    return min(delivery_dates, key=lambda d: d.date).date
