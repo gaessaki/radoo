@@ -8,7 +8,7 @@
     'external_dependencies': {
         'python': ['html2text']
     },
-    'depends': ['stock', 'delivery'],
+    'depends': ['stock', 'delivery', 'sale'],
     'data': [
         'views/delivery_carrier_view.xml',
         'views/stock_picking_views.xml',

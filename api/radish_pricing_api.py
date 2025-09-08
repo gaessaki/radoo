@@ -1,8 +1,11 @@
+from datetime import date
+
+from odoo.addons.delivery.models.sale_order import SaleOrder
 from .radish_api import RadishApi
 
 class RadishPricingApi(RadishApi):
 
-    def get_delivery_pricing(self, order, service_code):
+    def get_delivery_pricing(self, order, service_code: str):
         path = '/delivery'
 
         order.ensure_one()
@@ -25,7 +28,7 @@ class RadishPricingApi(RadishApi):
                 service_code
             ],
             "includeDatePredictions": True,
-            "pickupDate": "2025-08-22" # FIXME which date should I use here
+            "pickupDate": order.pickup_date
         }
 
         return self.post(path, body)

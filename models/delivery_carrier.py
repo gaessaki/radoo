@@ -1,6 +1,6 @@
 import logging
 from datetime import date
-from typing import List
+from typing import List, Dict
 
 from odoo import api
 from odoo import models, fields, _
@@ -36,7 +36,10 @@ class DeliveryCarrier(models.Model):
 
     radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
 
-    radish_include_expected_delivery = fields.Boolean(string='Use API for expected shipment delivery dates', default=False)
+    radish_use_fixed_price = fields.Boolean(string='Use the fixed price in shipment rates', default=False)
+
+    radish_include_expected_delivery = fields.Boolean(string='Use API for expected shipment delivery dates', default=True)
+
 
     # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)
 
@@ -96,11 +99,12 @@ class DeliveryCarrier(models.Model):
         """
         self.ensure_one()
 
-        if not self.radish_include_expected_delivery:
+        if not self.radish_include_expected_delivery and self.radish_use_fixed_price:
             return {
-                'success':         True,
-                'price':           self.radish_fixed_price,
-                'warning_message': None,
+                'success':                  True,
+                'price':                    self.radish_fixed_price,
+                'expected_delivery_dates':  None,
+                'warning_message':          None,
             }
 
         api = self._radish_pricing_api()
@@ -108,12 +112,18 @@ class DeliveryCarrier(models.Model):
         response = api.get_delivery_pricing(order, self.radish_service_code)
         response_data = response.json()
 
-        dates: List[tuple[date, float]] = [(prediction["date"], prediction["value"]) for prediction in response_data["rates"][0]["datePredicitons"]]
+        try:
+            price: float = response_data["rates"][0]["cost"]["amount"] / 100
+        except KeyError as e:
+            _logger.exception(e)
+            price = self.radish_fixed_price
+
+        dates: List[Dict] = response_data["rates"][0]["datePredictions"]
 
         return {
             'success':                      True,
-            'price':                        self.radish_fixed_price,
-            'expected_delivery_dates':      dates,
+            'price':                        self.radish_fixed_price if self.radish_use_fixed_price else price,
+            'expected_delivery_dates':      dates if self.radish_include_expected_delivery else None,
             'warning_message':              None,
         }
 
