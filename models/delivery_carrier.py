@@ -36,7 +36,9 @@ class DeliveryCarrier(models.Model):
 
     radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
 
-    radish_fixed_shipment_rate = fields.Boolean(string='Fixed price used for shipment rates', default=False)
+    radish_use_fixed_price = fields.Boolean(string='Fixed price used for shipment rates', default=False)
+
+    radish_use_pricing_api = fields.Boolean(string='Use API for shipment pricing and delivery dates', default=True)
 
     # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)
 
@@ -96,7 +98,7 @@ class DeliveryCarrier(models.Model):
         """
         self.ensure_one()
 
-        if self.radish_fixed_shipment_rate:
+        if not self.radish_use_pricing_api:
             return {
                 'success':         True,
                 'price':           self.radish_fixed_price,
@@ -108,7 +110,12 @@ class DeliveryCarrier(models.Model):
         response = api.get_delivery_pricing(order)
         response_data = response.json()
 
-        price: float = response_data["rates"][0]["cost"]["amount"] / 100
+        price: float
+        if self.radish_use_fixed_price:
+            price = self.radish_fixed_price
+        else:
+            price = response_data["rates"][0]["cost"]["amount"] / 100
+
         dates: List[tuple[date, float]] = [(prediction["date"], prediction["value"]) for prediction in response_data["rates"][0]["datePredicitons"]]
 
         return {
