@@ -112,13 +112,24 @@ class DeliveryCarrier(models.Model):
         response = api.get_delivery_pricing(order, self.radish_service_code)
         response_data = response.json()
 
-        try:
-            price: float = response_data["rates"][0]["cost"]["amount"] / 100
-        except KeyError as e:
-            _logger.exception(e)
-            price = self.radish_fixed_price
+        rates = response_data.get("rates", [])
+        if not rates:
+            raise ValidationError(f"No shipment rate found for order {order.id}.")
 
-        dates: List[Dict] = response_data["rates"][0]["datePredictions"]
+        first_rate = rates[0]
+        cost_info = first_rate.get("cost", {})
+        amount = cost_info.get("amount")
+
+        price: float = self.radish_fixed_price
+        if amount is not None:
+            try:
+                price = amount / 100
+            except TypeError:
+                _logger.warning("Amount is not a number in rate response: %s", amount)
+        else:
+            _logger.warning("No amount found in rate response.")
+
+        dates: List[Dict] = first_rate.get("datePredictions", [])
 
         return {
             'success':                      True,
