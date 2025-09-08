@@ -2,7 +2,7 @@ from .radish_api import RadishApi
 
 class RadishPricingApi(RadishApi):
 
-    def get_delivery_pricing(self, order):
+    def get_delivery_pricing(self, order, service_code):
         path = '/delivery'
 
         order.ensure_one()
@@ -22,7 +22,7 @@ class RadishPricingApi(RadishApi):
             },
             "parcels": package_weights,
             "standards": [
-                "standard" # FIXME add customization here if needed
+                service_code
             ],
             "includeDatePredictions": True,
             "pickupDate": "2025-08-22" # FIXME which date should I use here

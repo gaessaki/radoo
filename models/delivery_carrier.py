@@ -36,9 +36,7 @@ class DeliveryCarrier(models.Model):
 
     radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
 
-    radish_use_fixed_price = fields.Boolean(string='Fixed price used for shipment rates', default=False)
-
-    radish_use_pricing_api = fields.Boolean(string='Use API for shipment pricing and delivery dates', default=True)
+    radish_include_expected_delivery = fields.Boolean(string='Use API for expected shipment delivery dates', default=False)
 
     # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)
 
@@ -75,17 +73,17 @@ class DeliveryCarrier(models.Model):
     def _radish_merchant_api(self):
         return RadishMerchantApi('merchants', debug_logging=self.log_xml)
 
-    def _radish_pricing_api(self):
-        merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
-        if not merchant_key:
-            raise UserError("No merchant key found for the selected environment.")
-        return RadishPricingApi('merchants/pricing', merchant_key=merchant_key, debug_logging=self.log_xml)
-
     def _radish_order_api(self):
         merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
         if not merchant_key:
             raise UserError("No merchant key found for the selected environment.")
         return RadishOrderApi('merchants/orders', merchant_key=merchant_key, debug_logging=self.log_xml)
+
+    def _radish_pricing_api(self):
+        merchant_key = self.radish_prod_merchant_key if self.prod_environment else self.radish_test_merchant_key
+        if not merchant_key:
+            raise UserError("No merchant key found for the selected environment.")
+        return RadishPricingApi('merchants/pricing', merchant_key=merchant_key, debug_logging=self.log_xml)
 
     def radish_rate_shipment(self, order):
         """Compute the price of the order shipment
@@ -98,7 +96,7 @@ class DeliveryCarrier(models.Model):
         """
         self.ensure_one()
 
-        if not self.radish_use_pricing_api:
+        if not self.radish_include_expected_delivery:
             return {
                 'success':         True,
                 'price':           self.radish_fixed_price,
@@ -107,20 +105,14 @@ class DeliveryCarrier(models.Model):
 
         api = self._radish_pricing_api()
 
-        response = api.get_delivery_pricing(order)
+        response = api.get_delivery_pricing(order, self.radish_service_code)
         response_data = response.json()
-
-        price: float
-        if self.radish_use_fixed_price:
-            price = self.radish_fixed_price
-        else:
-            price = response_data["rates"][0]["cost"]["amount"] / 100
 
         dates: List[tuple[date, float]] = [(prediction["date"], prediction["value"]) for prediction in response_data["rates"][0]["datePredicitons"]]
 
         return {
             'success':                      True,
-            'price':                        price,
+            'price':                        self.radish_fixed_price,
             'expected_delivery_dates':      dates,
             'warning_message':              None,
         }
