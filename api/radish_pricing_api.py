@@ -31,7 +31,7 @@ class RadishPricingApi(RadishApi):
                 service_code
             ],
             "includeDatePredictions": True,
-            "pickupDate": pickup_date
+            **({"pickupDate": pickup_date} if pickup_date is not None else {})
         }
 
         return self.post(path, body)
