@@ -1,5 +1,4 @@
 import logging
-from datetime import date
 from typing import List, Dict
 
 from odoo import api
@@ -103,13 +102,18 @@ class DeliveryCarrier(models.Model):
             return {
                 'success':                  True,
                 'price':                    self.radish_fixed_price,
-                'expected_delivery_dates':  None,
                 'warning_message':          None,
             }
 
         api = self._radish_pricing_api()
 
-        response = api.get_delivery_pricing(order, self.radish_service_code)
+        try:
+            packages = self.radish_get_package_weights(order)
+            pickup_date = self.radish_order_picking_date(order)
+        except Exception as exc:
+            raise exc
+
+        response = api.get_delivery_pricing(order, self.radish_service_code, pickup_date, packages)
         response_data = response.json()
 
         rates = response_data.get("rates", [])
@@ -117,23 +121,29 @@ class DeliveryCarrier(models.Model):
             raise ValidationError(f"No shipment rate found for order {order.id}.")
 
         first_rate = rates[0]
-        cost_info = first_rate.get("cost", {})
-        amount = cost_info.get("amount")
 
-        price: float = self.radish_fixed_price
-        if amount is not None:
+        price: float
+        if self.radish_use_fixed_price:
+            price = self.radish_fixed_price
+        else:
+            cost_info = first_rate.get("cost", {})
+            amount = cost_info.get("amount")
+
             try:
                 price = amount / 100
             except TypeError:
-                _logger.warning("Amount is not a number in rate response: %s", amount)
-        else:
-            _logger.warning("No amount found in rate response.")
+                raise ValidationError("No amount found in rate response.")
 
         dates: List[Dict] = first_rate.get("datePredictions", [])
+        if not dates:
+            raise ValidationError(f"No shipment dates found.")
+
+        expected_delivery_date = min(dates, key=lambda d: (-d['value'], d['date']))['date']
 
         return {
             'success':                      True,
-            'price':                        self.radish_fixed_price if self.radish_use_fixed_price else price,
+            'price':                        price,
+            'expected_delivery_date':       expected_delivery_date if self.radish_include_expected_delivery else None,
             'expected_delivery_dates':      dates if self.radish_include_expected_delivery else None,
             'warning_message':              None,
         }
@@ -217,3 +227,9 @@ class DeliveryCarrier(models.Model):
         self.ensure_one()
         self._radish_order_api().cancel_order(picking)
         return True
+
+    def radish_get_package_weights(self, order):
+        return None
+
+    def radish_order_picking_date(self, order):
+        return None
