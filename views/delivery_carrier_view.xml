@@ -11,7 +11,9 @@
             <field name="radish_prod_merchant_key" autocomplete="off"/>
             <field name="radish_test_merchant_key" autocomplete="off"/>
             <field name="radish_service_code"/>
+            <field name="radish_use_fixed_price" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
             <field name="radish_fixed_price" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
+            <field name="radish_include_expected_delivery" attrs="{'required': [('delivery_type', '=', 'radish')]}"/>
             <!-- <field name="show_radish_bulk_print"/> -->
           </group>
         </page>

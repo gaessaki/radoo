@@ -3,6 +3,7 @@ from typing import List, Dict
 
 from odoo import api
 from odoo import models, fields, _
+from odoo.addons.product_packager.models.package import Package
 from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
 from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
 from odoo.addons.radoo.api.radish_pricing_api import RadishPricingApi
@@ -35,10 +36,9 @@ class DeliveryCarrier(models.Model):
 
     radish_fixed_price = fields.Float(string='Fixed Price', default=10.00)
 
-    radish_use_fixed_price = fields.Boolean(string='Use the fixed price in shipment rates', default=False)
+    radish_use_fixed_price = fields.Boolean(string='Use the fixed price in shipment rates', default=True)
 
-    radish_include_expected_delivery = fields.Boolean(string='Use API for expected shipment delivery dates', default=True)
-
+    radish_include_expected_delivery = fields.Boolean(string='Use API for expected shipment delivery dates', default=False)
 
     # show_radish_bulk_print = fields.Boolean(string='Enable Bulk Printing of Radish Orders', default=False)
 
@@ -107,11 +107,8 @@ class DeliveryCarrier(models.Model):
 
         api = self._radish_pricing_api()
 
-        try:
-            packages = self.radish_get_package_weights(order)
-            pickup_date = self.radish_order_picking_date(order)
-        except Exception as exc:
-            raise exc
+        packages = self.radish_get_package_weights(order)
+        pickup_date = self.radish_order_picking_date(order)
 
         response = api.get_delivery_pricing(order, self.radish_service_code, pickup_date, packages)
         response_data = response.json()
@@ -122,10 +119,8 @@ class DeliveryCarrier(models.Model):
 
         first_rate = rates[0]
 
-        price: float
-        if self.radish_use_fixed_price:
-            price = self.radish_fixed_price
-        else:
+        price: float = self.radish_fixed_price
+        if not self.radish_use_fixed_price:
             cost_info = first_rate.get("cost", {})
             amount = cost_info.get("amount")
 
@@ -134,17 +129,21 @@ class DeliveryCarrier(models.Model):
             except TypeError:
                 raise ValidationError("No amount found in rate response.")
 
-        dates: List[Dict] = first_rate.get("datePredictions", [])
-        if not dates:
-            raise ValidationError(f"No shipment dates found.")
+        dates = None
+        expected_delivery_date = None
+        if self.radish_include_expected_delivery:
+            dates = first_rate.get("datePredictions", [])
+            if not dates:
+                raise ValidationError(f"No shipment dates found.")
 
-        expected_delivery_date = min(dates, key=lambda d: (-d['value'], d['date']))['date']
+            # The most probable date is returned. In case of a tie, the earliest is returned.
+            expected_delivery_date = min(dates, key=lambda d: (-d['value'], d['date']))['date']
 
         return {
             'success':                      True,
             'price':                        price,
-            'expected_delivery_date':       expected_delivery_date if self.radish_include_expected_delivery else None,
-            'expected_delivery_dates':      dates if self.radish_include_expected_delivery else None,
+            'expected_delivery_date':       expected_delivery_date,
+            'expected_delivery_dates':      dates,
             'warning_message':              None,
         }
 
@@ -229,7 +228,8 @@ class DeliveryCarrier(models.Model):
         return True
 
     def radish_get_package_weights(self, order):
-        return None
+        # Dimensions aren't necessary, so aren't fetched
+        return [Package(order._get_estimated_weight(),1,1,1)]
 
     def radish_order_picking_date(self, order):
         return None
