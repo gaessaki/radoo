@@ -1,9 +1,8 @@
 import logging
-from typing import List, Dict
+from types import SimpleNamespace
 
 from odoo import api
 from odoo import models, fields, _
-from odoo.addons.product_packager.models.package import Package
 from odoo.addons.radoo.api.radish_merchant_api import RadishMerchantApi
 from odoo.addons.radoo.api.radish_order_api import RadishOrderApi
 from odoo.addons.radoo.api.radish_pricing_api import RadishPricingApi
@@ -107,9 +106,10 @@ class DeliveryCarrier(models.Model):
 
         api = self._radish_pricing_api()
 
+        packages = self.radish_get_package_weights(order)
         pickup_date = self.radish_order_picking_date(order)
 
-        response = api.get_delivery_pricing(order, self.radish_service_code, pickup_date)
+        response = api.get_delivery_pricing(order, self.radish_service_code, pickup_date, packages)
         response_data = response.json()
 
         rates = response_data.get("rates", [])
@@ -225,6 +225,10 @@ class DeliveryCarrier(models.Model):
         self.ensure_one()
         self._radish_order_api().cancel_order(picking)
         return True
+
+    def radish_get_package_weights(self, order):
+        packages = [SimpleNamespace(weight=order._get_estimated_weight())]
+        return packages
 
     def radish_order_picking_date(self, order):
         return None
