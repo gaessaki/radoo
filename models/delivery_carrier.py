@@ -107,10 +107,9 @@ class DeliveryCarrier(models.Model):
 
         api = self._radish_pricing_api()
 
-        packages = self.radish_get_package_weights(order)
         pickup_date = self.radish_order_picking_date(order)
 
-        response = api.get_delivery_pricing(order, self.radish_service_code, pickup_date, packages)
+        response = api.get_delivery_pricing(order, self.radish_service_code, pickup_date)
         response_data = response.json()
 
         rates = response_data.get("rates", [])
@@ -140,11 +139,11 @@ class DeliveryCarrier(models.Model):
             expected_delivery_date = min(dates, key=lambda d: (-d['value'], d['date']))['date']
 
         return {
-            'success':                      True,
-            'price':                        price,
-            'expected_delivery_date':       expected_delivery_date,
-            'expected_delivery_dates':      dates,
-            'warning_message':              None,
+            'success':                          True,
+            'price':                            price,
+            'expected_delivery_date':           expected_delivery_date,
+            'radish_expected_delivery_dates':   dates,
+            'warning_message':                  None,
         }
 
     def radish_send_shipping(self, pickings):
@@ -226,10 +225,6 @@ class DeliveryCarrier(models.Model):
         self.ensure_one()
         self._radish_order_api().cancel_order(picking)
         return True
-
-    def radish_get_package_weights(self, order):
-        # Dimensions aren't necessary, so aren't fetched
-        return [Package(order._get_estimated_weight(),1,1,1)]
 
     def radish_order_picking_date(self, order):
         return None
