@@ -3,7 +3,7 @@
     'version': '18.0.0.0',
     'author': 'Radish Cooperative',
     'summary': 'Fast, affordable local delivery with Radish!',
-    'category': 'eCommerce',
+    'category': 'Inventory/Delivery',
     'website': 'https://radish.coop',
     'external_dependencies': {
         'python': ['html2text']
