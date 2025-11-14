@@ -11,6 +11,28 @@ from odoo.exceptions import UserError, ValidationError
 _logger = logging.getLogger(__name__)
 
 
+def _radish_build_convert_price_function(order, company):
+    # Assume the prices configured in the delivery carrier and the Radish API will be in the company's currency (usually CAD)
+    company_currency = company.currency_id
+
+    if order:
+        date_order = order.date_order
+        order_currency = order.pricelist_id.currency_id
+    else:
+        date_order = fields.Date.today()
+        order_currency = company_currency
+
+    def convert_price(price):
+        if not price:
+            return price
+        if company_currency.id == order_currency.id:
+            return price
+        # Convert price to sale order currency, like the Fedex API does
+        return company_currency._convert(price, order_currency, company, date_order)
+
+    return convert_price
+
+
 class DeliveryCarrier(models.Model):
     _inherit = 'delivery.carrier'
 
@@ -97,11 +119,13 @@ class DeliveryCarrier(models.Model):
         """
         self.ensure_one()
 
+        convert_price = _radish_build_convert_price_function(order, order.company_id)
+
         if not self.radish_include_expected_delivery and self.radish_use_fixed_price:
             return {
-                'success':                  True,
-                'price':                    self.radish_fixed_price,
-                'warning_message':          None,
+                'success':         True,
+                'price':           convert_price(self.radish_fixed_price),
+                'warning_message': None,
             }
 
         api = self._radish_pricing_api()
@@ -139,11 +163,11 @@ class DeliveryCarrier(models.Model):
             expected_delivery_date = min(dates, key=lambda d: (-d['value'], d['date']))['date']
 
         return {
-            'success':                          True,
-            'price':                            price,
-            'expected_delivery_date':           expected_delivery_date,
-            'radish_expected_delivery_dates':   dates,
-            'warning_message':                  None,
+            'success':                        True,
+            'price':                          convert_price(price),
+            'expected_delivery_date':         expected_delivery_date,
+            'radish_expected_delivery_dates': dates,
+            'warning_message':                None,
         }
 
     def radish_send_shipping(self, pickings):
@@ -195,8 +219,11 @@ class DeliveryCarrier(models.Model):
 
             response = api.confirm_order(picking, packages)
             response_data = response.json()
+            convert_price = _radish_build_convert_price_function(picking.sale_id, picking.company_id)
+            exact_price = convert_price(self.radish_fixed_price)
+
             results.append({
-                'exact_price':     self.fixed_price,
+                'exact_price':     exact_price,
                 'tracking_number': response_data.get('trackingRef')
             })
             try:
