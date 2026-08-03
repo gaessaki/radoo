@@ -22,9 +22,9 @@
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='carrier_tracking_ref']" position="after">
+            <xpath expr="//field[@name='origin']" position="after">
                 <button name="get_radish_attachment"
-                        attrs="{'invisible': ['|', ('delivery_type', '!=', 'radish'), ('carrier_tracking_ref', '=', False)]}"
+                        invisible="carrier_id.delivery_type != 'radish' or not carrier_tracking_ref"
                         type="object"
                         class="wr-btn-black">
                     <img src="/radoo/static/description/icon.png" class="radish-icon" alt="Radish"/>

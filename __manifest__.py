@@ -1,6 +1,6 @@
 {
     'name': 'Radoo',
-    'version': '15.0.0.1',
+    'version': '19.0.1.0.0',
     'author': 'Radish Cooperative',
     'summary': 'Fast, affordable local delivery with Radish!',
     'category': 'eCommerce',

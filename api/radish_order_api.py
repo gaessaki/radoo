@@ -26,10 +26,12 @@ class RadishOrderApi(RadishApi):
             body['service_code'] = picking.carrier_id.radish_service_code
         return self.post('', body)
 
-    def confirm_order(self, picking, packages):
+    def confirm_order(self, picking, packages, pickup_date=None):
         order = picking.to_radish_order()
 
         body = {'order': order.toJSON(), 'parcels': packages, 'platform': 'radoo', 'confirm': True}
+        if pickup_date:
+            body['pickupDate'] = pickup_date
         if picking.carrier_id.radish_service_code:
             body['service_code'] = picking.carrier_id.radish_service_code
         return self.post('', body)

@@ -59,6 +59,10 @@ class RadishApi:
         self.debug_logging("Request: %s %s \nHeaders: %s \nPayload: %s" % (method, url, json.dumps(logged_headers, indent=2), json.dumps(json_data, indent=2)),
                            "%s %s" % (method, path))
 
+        print("\n" + "="*20 + " RADISH PAYLOAD " + "="*20)
+        print(json.dumps(json_data, indent=2))
+        print("="*56 + "\n")
+
         try:
             response = requests.request(
                 method,

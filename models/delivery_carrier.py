@@ -187,10 +187,11 @@ class DeliveryCarrier(models.Model):
         results = []
         for picking in pickings:
             packages = []
+            packages_in_picking = picking.move_line_ids.mapped('result_package_id')
             if len(picking.partner_id):
-                if not len(picking.package_ids):
+                if not packages_in_picking:
                     raise UserError(_('No packages found for picking %s.') % picking.name)
-                for package in picking.package_ids:
+                for package in packages_in_picking:
                     if not len(package.package_type_id):
                         raise ValidationError(_('No package type found for package %s.') % package.name)
                     package_type = package.package_type_id
@@ -217,7 +218,8 @@ class DeliveryCarrier(models.Model):
                         'products':   products
                     })
 
-            response = api.confirm_order(picking, packages)
+            pickup_date = self.radish_order_picking_date(picking.sale_id)
+            response = api.confirm_order(picking, packages, pickup_date=pickup_date)
             response_data = response.json()
             convert_price = _radish_build_convert_price_function(picking.sale_id, picking.company_id)
             exact_price = convert_price(self.radish_fixed_price)
@@ -258,4 +260,4 @@ class DeliveryCarrier(models.Model):
         return packages
 
     def radish_order_picking_date(self, order):
-        return None
+        return fields.Date.today().strftime('%Y-%m-%d')
