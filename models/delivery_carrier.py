@@ -260,4 +260,4 @@ class DeliveryCarrier(models.Model):
         return packages
 
     def radish_order_picking_date(self, order):
-        return fields.Date.today().strftime('%Y-%m-%d')
+        return None
