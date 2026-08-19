@@ -196,13 +196,14 @@ class DeliveryCarrier(models.Model):
                         raise ValidationError(_('No package type found for package %s.') % package.name)
                     package_type = package.package_type_id
                     products = []
-                    for quant in package.quant_ids:
-                        product = quant.product_id
-                        products.append({
-                            'name':     product.name,
-                            'quantity': quant.quantity,
-                            'image':    f'{base_url}/web/image?model=product.product&id={product.id}&field=image_512',
-                        })
+                    move_lines = picking.move_line_ids.filtered(lambda l: l.result_package_id == package)
+                    for line in move_lines:
+                        if line.product_id:
+                            products.append({
+                                'name':     line.product_id.name,
+                                'quantity': line.quantity,
+                                'image':    f'{base_url}/web/image?model=product.product&id={line.product_id.id}&field=image_512',
+                            })
                     packages.append({
                         'ref':        package.name,
                         'dimensions': {
