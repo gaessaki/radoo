@@ -1,7 +1,7 @@
 import base64
 import logging
 
-from odoo import models, _
+from odoo import fields, models, _
 from odoo.addons.radoo.api.models.radish_address import RadishAddress
 from odoo.addons.radoo.api.models.radish_order import RadishOrder
 from odoo.addons.radoo.api.models.radish_recipient import RadishRecipient
@@ -12,9 +12,13 @@ _logger = logging.getLogger(__name__)
 
 RADISH_LABEL_NAME = 'RadishLabel'
 
-
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
+
+    radish_tracking_url = fields.Char(
+            string="Radish Tracking Link",
+            compute="_compute_radish_tracking_url"
+        )
 
     def action_confirm(self):
         res = super(StockPicking, self).action_confirm()
@@ -133,6 +137,26 @@ class StockPicking(models.Model):
         else:
             raise ValidationError(_('Failed to retrieve the label from the delivery carrier API.'))
 
+    def get_radish_tracking(self):
+        self.ensure_one()
+        if self.carrier_id and self.carrier_id.delivery_type == 'radish':
+            url = self.carrier_id.radish_get_tracking_link(self)
+            return {
+                'type': 'ir.actions.act_url',
+                'url': url,
+                'target': 'new',
+            }
+
+
+    def _compute_radish_tracking_url(self):
+        for record in self:
+            if (record.carrier_id and 
+                record.carrier_id.delivery_type == 'radish' and 
+                record.carrier_tracking_ref):
+                record.radish_tracking_url = record.carrier_id.radish_get_tracking_link(record)
+            else:
+                record.radish_tracking_url = False
+                
     # Bulk print all selected labels
     # def bulk_print_attachments(self):
     #     pickings = self.env['stock.picking'].browse(self.env.context.get('active_ids', [])).filtered(lambda p: p.delivery_type == 'radish')

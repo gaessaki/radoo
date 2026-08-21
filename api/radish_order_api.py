@@ -33,7 +33,7 @@ class RadishOrderApi(RadishApi):
         if pickup_date:
             body['pickupDate'] = pickup_date
         if picking.carrier_id.radish_service_code:
-            body['service_code'] = picking.carrier_id.radish_service_code
+            body['standards'] = picking.carrier_id.radish_service_code
         return self.post('', body)
 
     def cancel_order(self, picking):
