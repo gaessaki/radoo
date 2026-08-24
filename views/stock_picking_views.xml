@@ -34,7 +34,7 @@
                         </button>
                     </div>
                     <div>
-                        <field name="radish_tracking_url" widget="url" nolabel="1" 
+                        <field name="carrier_tracking_url" widget="url" nolabel="1" 
                                invisible="delivery_type != 'radish' or carrier_tracking_ref == False"/>
                     </div>
                 </div>

@@ -15,11 +15,6 @@ RADISH_LABEL_NAME = 'RadishLabel'
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    radish_tracking_url = fields.Char(
-            string="Radish Tracking Link",
-            compute="_compute_radish_tracking_url"
-        )
-
     def action_confirm(self):
         res = super(StockPicking, self).action_confirm()
 
@@ -146,16 +141,6 @@ class StockPicking(models.Model):
                 'url': url,
                 'target': 'new',
             }
-
-
-    def _compute_radish_tracking_url(self):
-        for record in self:
-            if (record.carrier_id and 
-                record.carrier_id.delivery_type == 'radish' and 
-                record.carrier_tracking_ref):
-                record.radish_tracking_url = record.carrier_id.radish_get_tracking_link(record)
-            else:
-                record.radish_tracking_url = False
                 
     # Bulk print all selected labels
     # def bulk_print_attachments(self):
